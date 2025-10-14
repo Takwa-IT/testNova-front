@@ -1,0 +1,109 @@
+<!-- src/app/components/cv-analysis/cv-analysis.component.html -->
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Analyse de votre CV</h4>
+            <button type="button" class="btn-close" (click)="onCancel()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" #modalContent>
+            <!-- Score Global -->
+            <div class="alert alert-success text-center mb-3" *ngIf="getScore() > 0">
+                <h5>Score Global : {{ getScore() }}%</h5>
+                <p class="mb-0">Match avec les compétences requises</p>
+            </div>
+
+            <!-- Skills par Niveau -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">Compétences extraites par niveau :</label>
+                <div *ngIf="data?.analysis?.skills?.length > 0" class="row">
+                    <div *ngFor="let level of ['Avancé', 'Intermédiaire', 'Débutant']" class="col-md-4 mb-2">
+                        <h6 class="text-capitalize">{{ level.toLowerCase() }}</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span *ngFor="let skill of getSkillsByLevel(level)"
+                                [ngClass]="{'badge bg-success': level === 'Avancé', 'badge bg-warning': level === 'Intermédiaire', 'badge bg-info': level === 'Débutant'}">
+                                {{ skill.skill }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="!(data?.analysis?.skills?.length > 0)" class="alert alert-warning">
+                    Aucune compétence extraite. Vérifiez le format de votre CV.
+                </div>
+            </div>
+
+            <!-- Timeline des expériences -->
+            <div class="row" *ngIf="data?.analysis?.experiences?.length > 0">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Expériences extraites :</label>
+                    <ul class="timeline list-unstyled mt-2">
+                        <li *ngFor="let exp of data?.analysis?.experiences; let last = last"
+                            class="mb-3 position-relative">
+                            <div class="d-flex align-items-start">
+                                <div class="timeline-icon bg-danger rounded-circle d-flex align-items-center justify-content-center me-3"
+                                    style="width: 35px; height: 35px; min-width: 35px; font-size: 0.8em; color: white;">
+                                    {{ exp.year }}
+                                </div>
+                                <div class="flex-grow-1">
+                                    <strong class="d-block">{{ exp.role }}</strong>
+                                    <span class="text-muted">{{ exp.company }}</span>
+                                    <div *ngIf="exp.duration" class="small text-muted mt-1">Durée : {{ exp.duration }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="!last" class="position-absolute start-1 top-50 translate-middle-y"
+                                style="width: 2px; height: 20px; background-color: #dee2e6; z-index: -1;"></div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Détails de la dernière expérience :</label>
+                    <ul class="list-unstyled mt-2">
+                        <li>
+                            <strong>Entreprise :</strong> {{ getLastExperience()?.company || 'N/A' }}
+                        </li>
+                        <li>
+                            <strong>Durée :</strong>
+                            <span *ngIf="getLastExperience()?.duration">
+                                {{ getLastExperience()?.duration }}
+                            </span>
+                            <span *ngIf="!getLastExperience()?.duration" class="text-muted">Non spécifiée</span>
+                        </li>
+                        <li>
+                            <strong>Compétences owned :</strong>
+                            <div class="d-flex flex-wrap gap-1 mt-1">
+                                <span *ngFor="let comp of getLastExperience()?.competencies" class="badge bg-secondary">
+                                    {{ comp }}
+                                </span>
+                            </div>
+                            <span *ngIf="!(getLastExperience()?.competencies?.length > 0)"
+                                class="text-muted">Aucune</span>
+                        </li>
+                    </ul>
+                    <div *ngIf="data?.analysis?.summary" class="mt-3 p-3 bg-light rounded border">
+                        <strong>Résumé IA :</strong>
+                        <p class="mb-0 small">{{ data?.analysis?.summary }}</p>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="!(data?.analysis?.experiences?.length > 0)" class="alert alert-warning">
+                Aucune expérience extraite. Assurez-vous que votre CV inclut des dates et rôles clairs.
+            </div>
+
+            <!-- Zone vide si pas de données -->
+            <div *ngIf="!(data?.analysis?.skills?.length > 0) && !(data?.analysis?.experiences?.length > 0)"
+                class="text-center text-muted mt-4">
+                <i class="fas fa-file-alt fa-3x mb-3"></i>
+                <p>Aucune donnée extraite pour le moment. Vérifiez votre CV.</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-success" (click)="onDownload()" [disabled]="!hasValidData()">
+                📥 Télécharger le rapport (PDF)
+            </button>
+            <button type="button" class="btn btn-secondary" (click)="onCancel()">❌ Annuler</button>
+            <button type="button" class="btn btn-primary" (click)="onNextTest()" [disabled]="!hasValidData()">
+                ➡️ Passer au test
+            </button>
+        </div>
+    </div>
+</div>

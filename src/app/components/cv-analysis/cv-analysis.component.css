@@ -1,0 +1,58 @@
+/* src/app/components/cv-analysis/cv-analysis.component.css */
+.modal-body {
+    padding: 20px;
+}
+
+.badge {
+    font-size: 0.9em;
+    padding: 0.5em 0.75em;
+}
+
+.timeline li {
+    position: relative;
+    padding-left: 20px;
+}
+
+.timeline li:before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 10px;
+    width: 2px;
+    height: calc(100% - 10px);
+    background: #dee2e6;
+}
+
+.timeline-icon {
+    font-size: 0.8em;
+    color: white;
+    flex-shrink: 0;
+}
+
+.alert {
+    border-radius: 8px;
+    font-size: 0.9em;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Badges pour niveaux skills */
+.badge.bg-success {
+    background-color: #28a745;
+}
+
+/* Avancé */
+.badge.bg-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+/* Intermédiaire */
+.badge.bg-info {
+    background-color: #17a2b8;
+}
+
+/* Débutant */
