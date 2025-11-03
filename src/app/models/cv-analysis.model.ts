@@ -1,19 +1,20 @@
 export interface Skill {
-    skill: string;
-    level: 'Débutant' | 'Intermédiaire' | 'Avancé'; 
+    name: string;
+    level: "beginner" | "intermediate" | "advanced" | "expert";
 }
 
 export interface Experience {
-    year: string;
-    role: string;
     company: string;
-    duration?: string; 
-    competencies: string[];
+    role: string;
+    year: string;
+    duration?: string;
+    competences: string[];
 }
 
 export interface CvAnalysis {
-    score: number; 
+    resume: string;
     skills: Skill[];
-    experiences: Experience[]; 
-    summary?: string; 
+    experience: Experience[];
+    score?: number;
+    ownerName?: string;
 }

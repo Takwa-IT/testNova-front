@@ -116,14 +116,12 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Layout principal */
 .app-container {
     display: flex;
     min-height: 100vh;
     background: var(--color-light);
 }
 
-/* Sidebar navigation */
 .sidebar-nav {
     position: fixed;
     left: 0;
@@ -202,7 +200,6 @@ body {
     font-size: 0.9rem;
 }
 
-/* Main content */
 .main-content {
     margin-left: var(--sidebar-width);
     flex: 1;
@@ -293,7 +290,6 @@ body {
     font-weight: 600;
 }
 
-/* Feed wrapper */
 .feed-wrapper {
     display: flex;
     gap: 2rem;
@@ -373,7 +369,6 @@ body {
     background: var(--color-light);
 }
 
-/* Spinner */
 .spinner-border {
     display: inline-block;
     width: 3rem;
@@ -702,7 +697,6 @@ body {
     color: var(--color-secondary);
 }
 
-/* Sidebar suggestions */
 .sidebar-suggestions {
     width: 300px;
     position: sticky;

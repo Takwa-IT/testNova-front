@@ -10,7 +10,7 @@ export const routes: Routes = [
     },
 
     {
-        path: 'cv-analyse',
+        path: 'analysecv',
         component: CvAnalysisComponent
     },
 
@@ -20,6 +20,10 @@ export const routes: Routes = [
         component: JobFeedComponent
     },
 
+    {
 
+        path: 'full',
+        component: JobFeedComponent
+    },
 
 ];
