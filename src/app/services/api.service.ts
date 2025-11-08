@@ -65,8 +65,8 @@ export class ApiService {
   }
 
   // Reste du code inchangé (analyse CV, etc.)
-  analyzeCvWithAI(cvText: string, ownerName: string = ''): Observable<any> {
+  analyzeCvWithAI(cvText: string, ownerName: string = ''): Observable<CvAnalysis> {
     const body = { textcv: cvText, ownerName };
-    return this.http.post<any>(BACKEND_URL, body, this.httpOptions);
+    return this.http.post<CvAnalysis>(BACKEND_URL, body, this.httpOptions);
   }
 }

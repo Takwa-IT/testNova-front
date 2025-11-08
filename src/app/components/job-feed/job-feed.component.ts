@@ -145,24 +145,47 @@ export class JobFeedComponent implements OnInit {
         next: (rawResponse) => {
           console.log('📥 Réponse brute backend:', rawResponse)
 
-          // 3️⃣ Parser la réponse JSON (le backend renvoie une string JSON)
+          // 3️⃣ Parser la réponse JSON si nécessaire (compatibilité)
           let analysis
           try {
-            analysis = typeof rawResponse === 'string'
-              ? JSON.parse(rawResponse)
-              : rawResponse
+            analysis = typeof rawResponse === 'string' ? JSON.parse(rawResponse) : rawResponse
           } catch (parseError) {
             console.error('Erreur parsing JSON:', parseError)
             throw new Error('Format de réponse invalide du backend')
           }
 
           // 4️⃣ Adapter le format pour le composant cv-analysis
-          const adaptedAnalysis = {
-            score: this.calculateScore(analysis.skills || []),
-            skills: (analysis.skills || []).map((s: any) => ({
+          // Le backend peut maintenant renvoyer `skills` sous forme d'objet { hardSkills, softSkills }
+          const backendSkills = analysis.skills || []
+
+          let mappedSkills: any[] = []
+          let skillsGroup: any = undefined
+
+          if (Array.isArray(backendSkills)) {
+            // Ancien format : un tableau de skills
+            mappedSkills = backendSkills.map((s: any) => ({
               name: s.name,
               level: this.mapLevel(s.level)
-            })),
+            }))
+          } else {
+            // Nouveau format : { hardSkills: [...], softSkills: [...] }
+            const hard = (backendSkills.hardSkills || []).map((s: any) => ({
+              name: s.name,
+              level: this.mapLevel(s.level)
+            }))
+            const soft = (backendSkills.softSkills || []).map((s: any) => ({
+              name: s.name,
+              level: this.mapLevel(s.level)
+            }))
+            mappedSkills = [...hard, ...soft]
+            skillsGroup = { hardSkills: backendSkills.hardSkills || [], softSkills: backendSkills.softSkills || [] }
+          }
+
+          const adaptedAnalysis = {
+            score: this.calculateScore(mappedSkills),
+            skills: mappedSkills,
+            // Conserver la structure groupée si fournie (utile pour le composant)
+            skillsGroup,
             experience: (analysis.experience || []).map((exp: any) => ({
               ...exp,
               competences: exp.competences || []

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import * as pdfjsLib from 'pdfjs-dist';
+// pdfjs-dist is loaded dynamically to avoid increasing the initial bundle size
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +17,14 @@ export class PdfExtractorService {
   async extractTextFromPdf(file: File): Promise<string> {
     try {
       const arrayBuffer = await file.arrayBuffer();
+
+      // Import pdfjs-dist dynamically to avoid bundling it in the initial chunk
+      const pdfjsLib: any = await import('pdfjs-dist');
+      // Ensure worker is set (use CDN fallback)
+      if (pdfjsLib && pdfjsLib.GlobalWorkerOptions) {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
+      }
+
       const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
       let fullText = '';

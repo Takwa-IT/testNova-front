@@ -11,9 +11,15 @@ export interface Experience {
     competences: string[];
 }
 
+export interface SkillsGroup {
+    hardSkills: Skill[];
+    softSkills: Skill[];
+}
+
+// Accept either an array of skills (legacy) or a grouped object (new backend)
 export interface CvAnalysis {
     resume: string;
-    skills: Skill[];
+    skills: Skill[] | SkillsGroup;
     experience: Experience[];
     score?: number;
     ownerName?: string;

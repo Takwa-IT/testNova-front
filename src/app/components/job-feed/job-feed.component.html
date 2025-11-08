@@ -156,7 +156,7 @@
                                 <input type="text" class="comment-input" placeholder="Écrivez un commentaire..."
                                     [(ngModel)]="newCommentText[offer.id]" (keyup.enter)="onAddComment(offer)">
                                 <button class="btn-send-comment" (click)="onAddComment(offer)"
-                                    [disabled]="!newCommentText[offer.id]?.trim()">
+                                    [disabled]="!((newCommentText[offer.id] || '').trim())">
                                     <i class="bi bi-send-fill"></i>
                                 </button>
                             </div>

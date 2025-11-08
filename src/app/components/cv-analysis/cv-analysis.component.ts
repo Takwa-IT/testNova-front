@@ -1,8 +1,6 @@
 import { Component, ViewChild, ElementRef, Inject } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { Router } from "@angular/router";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 import type { CvAnalysis, Skill, Experience } from "../../models/cv-analysis.model";
 import { DataService } from "../../services/data.service";
 import { CommonModule } from "@angular/common";
@@ -29,97 +27,32 @@ export class CvAnalysisComponent {
     private dataService: DataService,
   ) {
     console.log("CV Analysis data received:", this.data);
-    this.categorizeSkills();
+    // Initialiser les listes de hard/soft skills depuis le backend si fournies.
+    // Note: job-feed peut fournir `analysis.skills` (array) OR `analysis.skillsGroup` (object).
+    const skillsRaw = this.data?.analysis?.skills;
+    const skillsGroup = (this.data?.analysis as any)?.skillsGroup || (this.data?.analysis as any)?.skillsGroup;
+
+    if (skillsGroup && !Array.isArray(skillsGroup)) {
+      // If job-feed put grouped skills into a separate property `skillsGroup`
+      this.hardSkills = (skillsGroup.hardSkills || []).map((s: any) => ({ name: s.name, level: s.level }));
+      this.softSkills = (skillsGroup.softSkills || []).map((s: any) => ({ name: s.name, level: s.level }));
+    } else if (skillsRaw && !Array.isArray(skillsRaw)) {
+      // Backend directly returned skills as grouped object
+      this.hardSkills = (skillsRaw.hardSkills || []).map((s: any) => ({ name: s.name, level: s.level }));
+      this.softSkills = (skillsRaw.softSkills || []).map((s: any) => ({ name: s.name, level: s.level }));
+    } else if (Array.isArray(skillsRaw)) {
+      // Legacy format: put all skills into softSkills to avoid re-categorization
+      this.hardSkills = [];
+      this.softSkills = skillsRaw.map((s: any) => ({ name: s.name, level: s.level }));
+    }
+
     // Sélectionner la première expérience par défaut
     if (this.getExperiences().length > 0) {
       this.selectedExperience = this.getExperiences()[0];
     }
   }
 
-  private categorizeSkills(): void {
-    const allSkills = this.getAllSkills();
-
-    // Définir les catégories de hard skills (liste étendue et corrigée)
-    const hardSkillsKeywords = [
-      // Langages de programmation
-      'javascript', 'js', 'python', 'py', 'java', 'html', 'css', 'react', 'angular', 'vue',
-      'node.js', 'nodejs', 'sql', 'mongodb', 'git', 'docker', 'aws', 'php', 'c#', 'csharp',
-      'c++', 'cpp', 'typescript', 'ts', 'ruby', 'swift', 'kotlin', 'go', 'golang', 'rust',
-      'scala', 'perl', 'lua', 'r', 'matlab', 'bash', 'shell', 'powershell',
-
-      // Frameworks et bibliothèques
-      'spring', 'django', 'flask', 'express', 'laravel', 'symfony', 'asp.net', 'net',
-      'jquery', 'bootstrap', 'tailwind', 'sass', 'less', 'webpack', 'babel', 'gulp', 'grunt',
-      'redux', 'vuex', 'rxjs', 'rxjs', 'nestjs', 'fastapi', 'graphql', 'apollo',
-
-      // Bases de données
-      'mysql', 'postgresql', 'oracle', 'sqlite', 'cassandra', 'neo4j', 'redis', 'memcached',
-      'elasticsearch', 'solr', 'couchdb', 'firebase', 'dynamodb', 'cosmosdb',
-
-      // DevOps et Cloud
-      'jenkins', 'kubernetes', 'k8s', 'terraform', 'ansible', 'puppet', 'chef', 'docker',
-      'gitlab ci', 'github actions', 'circleci', 'travis', 'azure', 'gcp', 'google cloud',
-      'heroku', 'digitalocean', 'linode', 'vercel', 'netlify', 'cloudflare',
-
-      // Outils de développement
-      'vscode', 'intellij', 'eclipse', 'sublime', 'vim', 'emacs', 'atom', 'webstorm',
-      'pycharm', 'visual studio', 'xcode', 'android studio',
-
-      // Systèmes d'exploitation
-      'linux', 'ubuntu', 'centos', 'redhat', 'debian', 'windows', 'macos', 'unix',
-
-      // Technologies web
-      'rest', 'api', 'json', 'xml', 'ajax', 'websocket', 'oauth', 'jwt', 'ssl', 'tls',
-      'http', 'https', 'tcp/ip', 'dns', 'cdn',
-
-      // Testing et QA
-      'jest', 'mocha', 'jasmine', 'cypress', 'selenium', 'karma', 'protractor', 'testng',
-      'junit', 'phpunit', 'rspec', 'pytest', 'unittest', 'chai', 'enzyme',
-
-      // Mobile
-      'android', 'ios', 'flutter', 'react native', 'xamarin', 'ionic', 'cordova', 'capacitor',
-
-      // Data Science et ML
-      'machine learning', 'ml', 'ai', 'artificial intelligence', 'data science', 'big data',
-      'pandas', 'numpy', 'scikit-learn', 'tensorflow', 'pytorch', 'keras', 'jupyter',
-      'tableau', 'power bi', 'qlik', 'looker', 'matplotlib', 'seaborn', 'plotly',
-
-      // Design et UX
-      'photoshop', 'illustrator', 'figma', 'sketch', 'xd', 'invision', 'zeplin', 'principle',
-      'blender', 'maya', '3ds max', 'autocad', 'sketch up',
-
-      // Game Development
-      'unity', 'unreal engine', 'godot', 'cocos2d', 'gamemaker', 'cryengine',
-
-      // CMS et E-commerce
-      'wordpress', 'shopify', 'magento', 'woocommerce', 'drupal', 'joomla', 'prestashop',
-      'opencart', 'squarespace', 'wix',
-
-      // Sécurité
-      'cybersecurity', 'penetration testing', 'ethical hacking', 'owasp', 'nmap', 'metasploit',
-      'burp suite', 'wireshark', 'firewall', 'encryption',
-
-      // Autres technologies
-      'blockchain', 'ethereum', 'solidity', 'smart contracts', 'iot', 'arduino', 'raspberry pi',
-      'embedded systems', 'vhdl', 'verilog', 'fpga'
-    ];
-
-    this.hardSkills = allSkills.filter(skill => {
-      // Fix: Guard for undefined name
-      if (!skill.name) return false;
-      return hardSkillsKeywords.some(keyword =>
-        skill.name.toLowerCase().includes(keyword.toLowerCase())
-      );
-    });
-
-    this.softSkills = allSkills.filter(skill => {
-      // Fix: Guard for undefined name
-      if (!skill.name) return true; // Default to soft if no name
-      return !hardSkillsKeywords.some(keyword =>
-        skill.name.toLowerCase().includes(keyword.toLowerCase())
-      );
-    });
-  }
+  
 
   toggleSkillsDropdown(): void {
     this.showSkillsDropdown = !this.showSkillsDropdown;
@@ -184,7 +117,18 @@ export class CvAnalysisComponent {
   }
 
   getAllSkills(): Skill[] {
-    return this.data?.analysis?.skills || [];
+    const analysis = this.data?.analysis as any;
+    const skillsRaw = analysis?.skills;
+    const skillsGroup = analysis?.skillsGroup;
+
+    if (skillsGroup && !Array.isArray(skillsGroup)) {
+      return [...(skillsGroup.hardSkills || []), ...(skillsGroup.softSkills || [])];
+    }
+
+    if (!skillsRaw) return [];
+    if (Array.isArray(skillsRaw)) return skillsRaw;
+    // skillsRaw is an object { hardSkills, softSkills }
+    return [...(skillsRaw.hardSkills || []), ...(skillsRaw.softSkills || [])];
   }
 
   getExperiences(): Experience[] {
@@ -201,7 +145,20 @@ export class CvAnalysisComponent {
   }
 
   hasValidData(): boolean {
-    return !!(this.data?.analysis?.skills?.length > 0 || this.data?.analysis?.experience?.length > 0);
+    const skillsRaw = this.data?.analysis?.skills;
+    let hasSkills = false;
+    if (skillsRaw) {
+      if (Array.isArray(skillsRaw)) {
+        hasSkills = skillsRaw.length > 0;
+      } else {
+        const hardCount = (skillsRaw.hardSkills && skillsRaw.hardSkills.length) || 0;
+        const softCount = (skillsRaw.softSkills && skillsRaw.softSkills.length) || 0;
+        hasSkills = hardCount + softCount > 0;
+      }
+    }
+
+    const hasExperience = (this.data?.analysis?.experience && this.data.analysis.experience.length > 0) || false;
+    return !!(hasSkills || hasExperience);
   }
 
   onCancel(): void {
@@ -239,6 +196,8 @@ export class CvAnalysisComponent {
       tempElement.appendChild(originalContent);
       document.body.appendChild(tempElement);
 
+      // Charger html2canvas dynamiquement pour réduire le bundle initial
+      const { default: html2canvas } = await import('html2canvas');
       const canvas = await html2canvas(tempElement, {
         scale: 3,
         useCORS: true,
@@ -254,7 +213,9 @@ export class CvAnalysisComponent {
       document.body.removeChild(tempElement);
 
       const imgData = canvas.toDataURL("image/png", 1.0);
-      const pdf = new jsPDF("p", "mm", "a4");
+  // Charger jspdf dynamiquement
+  const { default: jsPDF } = await import('jspdf');
+  const pdf = new jsPDF("p", "mm", "a4");
 
       // Dimensions A4 en mm
       const pageWidth = 180;
