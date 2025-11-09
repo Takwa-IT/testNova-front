@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef, Inject } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { Router } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import type { CvAnalysis, Skill, Experience } from "../../models/cv-analysis.model";
 import { DataService } from "../../services/data.service";
 import { CommonModule } from "@angular/common";
@@ -8,7 +8,7 @@ import { CommonModule } from "@angular/common";
 @Component({
   selector: "app-cv-analysis",
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: "./cv-analysis.component.html",
   styleUrls: ["./cv-analysis.component.css"],
 })
@@ -51,8 +51,6 @@ export class CvAnalysisComponent {
       this.selectedExperience = this.getExperiences()[0];
     }
   }
-
-  
 
   toggleSkillsDropdown(): void {
     this.showSkillsDropdown = !this.showSkillsDropdown;
@@ -157,7 +155,7 @@ export class CvAnalysisComponent {
       }
     }
 
-    const hasExperience = (this.data?.analysis?.experience && this.data.analysis.experience.length > 0) || false;
+    const hasExperience = (this.data?.analysis?.experience?.length || 0) > 0;  // Fixed null-safe
     return !!(hasSkills || hasExperience);
   }
 
@@ -213,9 +211,9 @@ export class CvAnalysisComponent {
       document.body.removeChild(tempElement);
 
       const imgData = canvas.toDataURL("image/png", 1.0);
-  // Charger jspdf dynamiquement
-  const { default: jsPDF } = await import('jspdf');
-  const pdf = new jsPDF("p", "mm", "a4");
+      // Charger jspdf dynamiquement
+      const { default: jsPDF } = await import('jspdf');
+      const pdf = new jsPDF("p", "mm", "a4");
 
       // Dimensions A4 en mm
       const pageWidth = 180;
@@ -352,6 +350,7 @@ export class CvAnalysisComponent {
       return;
     }
 
+    console.log('Setting CV analysis before navigation:', this.data.analysis);  // Debug: Confirm set
     this.dataService.setCvAnalysis(this.data.analysis);
     this.dialogRef.close();
     this.router.navigate(["/test"]);

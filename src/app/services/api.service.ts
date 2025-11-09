@@ -8,8 +8,7 @@ import { CvAnalysis } from '../models/cv-analysis.model';
 import { environment } from '../../environments/environment';
 
 const ADZUNA_URL = 'https://api.adzuna.com/v1/api/jobs/gb/search/30?app_id=04af4a1c&app_key=37926d2f11a44c707f25b87c4fd3a828%09'; // Base URL Adzuna
-const BACKEND_URL = 'http://localhost:8081/analysecv';
-
+const BACKEND_URL = 'http://localhost:8081/api/cv/analyze'; // Backend CV analysis endpoint
 @Injectable({
   providedIn: 'root'
 })
@@ -62,6 +61,33 @@ export class ApiService {
     if (!company || !company.logo) return null;  // Guard : évite .length sur undefined
     // Si logo est string, retourne-le ; sinon, fallback placeholder
     return typeof company.logo === 'string' ? company.logo : 'assets/placeholder-company.png';
+  }
+
+  // Méthode pour récupérer les entreprises suggérées
+  getSuggestedCompanies(): Observable<any[]> {
+    // Simulation d'une API - en production, remplacer par un vrai endpoint
+    return this.http.get<any[]>('https://jsonplaceholder.typicode.com/users').pipe(
+      map(users => users.slice(0, 4).map(user => ({
+        name: user.company.name,
+        logo: `https://images.unsplash.com/photo-${Math.floor(Math.random() * 1000000000000)}?w=80&h=80&fit=crop&crop=center`,
+        sector: user.company.catchPhrase.split(' ').slice(0, 2).join(' ') + ' • ' + user.company.bs.split(' ')[0]
+      })))
+    );
+  }
+
+  // Méthode pour récupérer les hashtags tendances
+  getTrendingHashtags(): Observable<any[]> {
+    // Simulation d'une API - en production, remplacer par un vrai endpoint
+    const hashtags = [
+      { name: 'DéveloppementWeb', posts: Math.floor(Math.random() * 5000) + 2000 },
+      { name: 'Intelligence Artificielle', posts: Math.floor(Math.random() * 3000) + 1000 },
+      { name: 'RemoteWork', posts: Math.floor(Math.random() * 4000) + 2000 },
+      { name: 'DataScience', posts: Math.floor(Math.random() * 2500) + 1000 },
+      { name: 'UXDesign', posts: Math.floor(Math.random() * 2000) + 500 }
+    ];
+    return this.http.get<any[]>('https://jsonplaceholder.typicode.com/posts').pipe(
+      map(() => hashtags.sort((a, b) => b.posts - a.posts))
+    );
   }
 
   // Reste du code inchangé (analyse CV, etc.)

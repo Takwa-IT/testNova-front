@@ -1,19 +1,34 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { CvAnalysis } from '../models/cv-analysis.model';
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { BehaviorSubject, catchError, Observable, of, tap } from "rxjs";
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class DataService {
-  private cvAnalysisSubject = new BehaviorSubject<CvAnalysis | null>(null);
-  cvAnalysis$ = this.cvAnalysisSubject.asObservable();
+  private cvAnalysisSource = new BehaviorSubject<any>(null);
+  cvAnalysis$ = this.cvAnalysisSource.asObservable();
 
-  setCvAnalysis(analysis: CvAnalysis): void {
-    this.cvAnalysisSubject.next(analysis);
+  private apiUrl = 'http://localhost:8081/api/cv/analyze';  // Fixed: Use /api/cv/analyze to match backend
+
+  constructor(private http: HttpClient) { }
+
+  analyzeCv(textcv: string): Observable<any> {
+    return this.http.post<any>(this.apiUrl, { textcv }).pipe(  // Sends { cvText }
+      tap((response: any) => {
+        console.log("Réponse backend reçue:", response);
+        this.cvAnalysisSource.next(response); // ENVOIE À TOUS LES COMPOSANTS
+      }),
+      catchError(err => {
+        console.error("Erreur API:", err);
+        return of({ analysis: { score: 50, fileName: "Erreur.pdf", uploadDate: "Maintenant" } });
+      })
+    );
   }
 
-  clearCvAnalysis(): void {
-    this.cvAnalysisSubject.next(null);
+  setCvAnalysis(data: any) {
+    this.cvAnalysisSource.next(data);
+  }
+
+  getCvAnalysis(): any {
+    return this.cvAnalysisSource.value;
   }
 }

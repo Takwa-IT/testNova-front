@@ -20,6 +20,7 @@ export class JobFeedComponent implements OnInit {
   selectedFile: File | null = null
   selectedOfferId: number | null = null
   isUploading = false
+  progress = 0;  // Progression pour l'analyse CV
   isLoadingOffers = true
   showCommentsForPost: { [key: number]: boolean } = {}
   newCommentText: { [key: number]: string } = {}
@@ -34,6 +35,8 @@ export class JobFeedComponent implements OnInit {
   ngOnInit(): void {
     this.loadOffers()
     this.loadFollowedCompanies()
+    this.loadSuggestedCompanies()
+    this.loadTrendingHashtags()
   }
 
   loadOffers(what = "developer", location = "france"): void {
@@ -51,7 +54,7 @@ export class JobFeedComponent implements OnInit {
         this.isLoadingOffers = false
       },
       error: (err) => {
-        console.error("Erreur chargement offres:", err)
+        console.error("Error loading offers:", err)
         this.offers = []
         this.isLoadingOffers = false
       },
@@ -75,7 +78,7 @@ export class JobFeedComponent implements OnInit {
   onShareClick(offer: Offer): void {
     offer.shares++
     navigator.clipboard.writeText(`Check out this job: ${offer.title} at ${offer.company}`)
-    alert("Lien copié dans le presse-papier !")
+    alert("Link copied to clipboard!")
   }
 
   onAddComment(offer: Offer): void {
@@ -83,7 +86,7 @@ export class JobFeedComponent implements OnInit {
     if (commentText) {
       const newComment: Comment = {
         id: Date.now(),
-        author: "Utilisateur actuel",
+        author: "Current user",
         authorAvatar: "/diverse-user-avatars.png",
         content: commentText,
         timestamp: new Date(),
@@ -107,7 +110,7 @@ export class JobFeedComponent implements OnInit {
     fileInput.click()
   }
 
-  // 🆕 MÉTHODE MODIFIÉE : Extraction PDF + Analyse IA
+  // 🆕 MÉTHODE MODIFIÉE : Extraction PDF + Analyse IA avec progression
   async onFileSelected(event: any): Promise<void> {
     const file = event.target.files[0]
 
@@ -116,46 +119,57 @@ export class JobFeedComponent implements OnInit {
     }
 
     if (file.type !== "application/pdf") {
-      alert("Veuillez sélectionner un fichier PDF valide.")
+      alert("Please select a valid PDF file.")
       return
     }
 
     if (!this.selectedOfferId) {
-      alert("Erreur : aucune offre sélectionnée.")
+      alert("Error: No offer selected.")
       return
     }
 
     this.selectedFile = file
     this.isUploading = true
+    this.progress = 0
+
+    // Simulation de progression élégante (courbe non linéaire)
+    const progressInterval = setInterval(() => {
+      this.progress += Math.random() * 15
+      if (this.progress > 95) {
+        this.progress = 95  // Pause avant fin
+      }
+    }, 200)
 
     try {
       // 1️⃣ Extraire le texte du PDF
-      console.log('📄 Extraction du texte du PDF...')
+      console.log('📄 Extracting PDF text...')
       const cvText = await this.pdfExtractor.extractTextFromPdf(file)
 
       if (!cvText || cvText.length < 50) {
-        throw new Error('Le PDF semble vide ou illisible')
+        throw new Error('The PDF seems empty or unreadable')
       }
 
-      console.log('✅ Texte extrait:', cvText.substring(0, 200) + '...')
+      console.log('✅ Text extracted:', cvText.substring(0, 200) + '...')
 
       // 2️⃣ Envoyer au backend pour analyse IA
-      console.log('🤖 Envoi au backend pour analyse IA...')
+      console.log('🤖 Sending to backend for AI analysis...')
       this.apiService.analyzeCvWithAI(cvText).subscribe({
         next: (rawResponse) => {
-          console.log('📥 Réponse brute backend:', rawResponse)
+          clearInterval(progressInterval)
+          this.progress = 100
+
+          console.log('📥 Raw backend response:', rawResponse)
 
           // 3️⃣ Parser la réponse JSON si nécessaire (compatibilité)
           let analysis
           try {
             analysis = typeof rawResponse === 'string' ? JSON.parse(rawResponse) : rawResponse
           } catch (parseError) {
-            console.error('Erreur parsing JSON:', parseError)
-            throw new Error('Format de réponse invalide du backend')
+            console.error('JSON parsing error:', parseError)
+            throw new Error('Invalid backend response format')
           }
 
           // 4️⃣ Adapter le format pour le composant cv-analysis
-          // Le backend peut maintenant renvoyer `skills` sous forme d'objet { hardSkills, softSkills }
           const backendSkills = analysis.skills || []
 
           let mappedSkills: any[] = []
@@ -188,32 +202,39 @@ export class JobFeedComponent implements OnInit {
             skillsGroup,
             experience: (analysis.experience || []).map((exp: any) => ({
               ...exp,
-              competences: exp.competences || []
+              competencies: exp.competencies || []
             })),
             resume: analysis.resume || ''
           }
 
-          console.log('✅ Analyse adaptée:', adaptedAnalysis)
+          console.log('✅ Adapted analysis:', adaptedAnalysis)
 
           // 5️⃣ Ouvrir le dialog avec les résultats
-          this.isUploading = false
-          this.dialog.open(CvAnalysisComponent, {
-            width: '900px',
-            maxHeight: '90vh',
-            data: { analysis: adaptedAnalysis }
-          })
+          setTimeout(() => {
+            this.isUploading = false
+            this.progress = 0  // Reset
+            this.dialog.open(CvAnalysisComponent, {
+              width: '900px',
+              maxHeight: '90vh',
+              data: { analysis: adaptedAnalysis }
+            })
+          }, 500)  // Délai pour voir 100%
         },
         error: (err) => {
+          clearInterval(progressInterval)
           this.isUploading = false
-          console.error('❌ Erreur analyse backend:', err)
-          alert(`Erreur lors de l'analyse du CV: ${err.message || 'Erreur inconnue'}`)
+          this.progress = 0
+          console.error('❌ Backend analysis error:', err)
+          alert(`CV analysis error: ${err.message || 'Unknown error'}`)
         }
       })
 
     } catch (error: any) {
+      clearInterval(progressInterval)
       this.isUploading = false
-      console.error('❌ Erreur extraction PDF:', error)
-      alert(`Erreur: ${error.message || 'Impossible de lire le PDF'}`)
+      this.progress = 0
+      console.error('❌ PDF extraction error:', error)
+      alert(`Error: ${error.message || 'Cannot read PDF'}`)
     }
 
     // Réinitialiser l'input file
@@ -232,9 +253,9 @@ export class JobFeedComponent implements OnInit {
     };
 
     const totalScore = skills.reduce((sum, skill) => {
-      const level = skill?.level;  // Guard : skill.level safe
-      if (!level) return sum;  // Skip si undefined
-      const lower = level.toLowerCase();  // Safe
+      const level = skill?.level;
+      if (!level) return sum;
+      const lower = level.toLowerCase();
       return sum + (levelScores[lower] || 0);
     }, 0);
 
@@ -243,8 +264,8 @@ export class JobFeedComponent implements OnInit {
 
   // 🆕 Mapper les niveaux backend vers frontend
   private mapLevel(level: string | undefined): 'beginner' | 'intermediate' | 'advanced' | 'expert' {
-    if (!level) return 'beginner';  // Guard : fallback si undefined/null/empty
-    const lower = level.toLowerCase();  // Safe maintenant
+    if (!level) return 'beginner';
+    const lower = level.toLowerCase();
     const mapping: { [key: string]: 'beginner' | 'intermediate' | 'advanced' | 'expert' } = {
       'beginner': 'beginner',
       'intermediate': 'intermediate',
@@ -261,28 +282,33 @@ export class JobFeedComponent implements OnInit {
 
   getTimeAgo(date: Date): string {
     const seconds = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000)
-    if (seconds < 60) return "À l'instant"
-    if (seconds < 3600) return `Il y a ${Math.floor(seconds / 60)} min`
-    if (seconds < 86400) return `Il y a ${Math.floor(seconds / 3600)} h`
-    return `Il y a ${Math.floor(seconds / 86400)} j`
+    if (seconds < 60) return "Just now"
+    if (seconds < 3600) return ` ${Math.floor(seconds / 60)} min ago`
+    if (seconds < 86400) return ` ${Math.floor(seconds / 3600)} h ago`
+    return ` ${Math.floor(seconds / 86400)} d ago`
   }
 
   followedCompanies: Set<string> = new Set();
+
+  suggestedCompanies: any[] = [];
+  trendingHashtags: any[] = [];
+  isLoadingCompanies = true;
+  isLoadingHashtags = true;
 
 
   followCompany(event: Event, companyName: string): void {
     const button = event.target as HTMLButtonElement;
 
     if (this.followedCompanies.has(companyName)) {
-      // Désabonnement
+      // Unfollow
       this.followedCompanies.delete(companyName);
       this.updateFollowButton(button, false);
-      console.log(`Désabonné de ${companyName}`);
+      console.log(`Unfollowed ${companyName}`);
     } else {
-      // Abonnement
+      // Follow
       this.followedCompanies.add(companyName);
       this.updateFollowButton(button, true);
-      console.log(`Abonné à ${companyName}`);
+      console.log(`Followed ${companyName}`);
     }
 
     this.saveFollowedCompanies();
@@ -291,10 +317,10 @@ export class JobFeedComponent implements OnInit {
   private updateFollowButton(button: HTMLButtonElement, isFollowing: boolean): void {
     if (isFollowing) {
       button.classList.add('following');
-      button.textContent = 'Abonné';
+      button.textContent = 'Following';
     } else {
       button.classList.remove('following');
-      button.textContent = 'Suivre';
+      button.textContent = 'Follow';
     }
 
     // Animation
@@ -305,18 +331,18 @@ export class JobFeedComponent implements OnInit {
   }
 
   private loadFollowedCompanies(): void {
-    // Charger depuis le localStorage ou une API
+    // Charge from localStorage or API
     const saved = localStorage.getItem('followedCompanies');
     if (saved) {
       this.followedCompanies = new Set(JSON.parse(saved));
 
-      // Mettre à jour les boutons au chargement
+      // Update buttons on load
       setTimeout(() => this.updateAllFollowButtons(), 100);
     }
   }
 
   private saveFollowedCompanies(): void {
-    // Sauvegarder dans le localStorage ou une API
+    // Save to localStorage or API
     localStorage.setItem('followedCompanies', JSON.stringify([...this.followedCompanies]));
   }
 
@@ -326,7 +352,37 @@ export class JobFeedComponent implements OnInit {
       const companyName = button.getAttribute('data-company');
       if (companyName && this.followedCompanies.has(companyName)) {
         button.classList.add('following');
-        button.textContent = 'Abonné';
+        button.textContent = 'Following';
+      }
+    });
+  }
+
+  private loadSuggestedCompanies(): void {
+    this.isLoadingCompanies = true;
+    this.apiService.getSuggestedCompanies().subscribe({
+      next: (companies) => {
+        this.suggestedCompanies = companies;
+        this.isLoadingCompanies = false;
+      },
+      error: (err) => {
+        console.error('Error loading suggested companies:', err);
+        this.suggestedCompanies = [];
+        this.isLoadingCompanies = false;
+      }
+    });
+  }
+
+  private loadTrendingHashtags(): void {
+    this.isLoadingHashtags = true;
+    this.apiService.getTrendingHashtags().subscribe({
+      next: (hashtags) => {
+        this.trendingHashtags = hashtags;
+        this.isLoadingHashtags = false;
+      },
+      error: (err) => {
+        console.error('Error loading trending hashtags:', err);
+        this.trendingHashtags = [];
+        this.isLoadingHashtags = false;
       }
     });
   }

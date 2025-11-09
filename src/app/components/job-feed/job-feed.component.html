@@ -7,11 +7,11 @@
         <nav class="nav-menu">
             <a href="#" class="nav-item active">
                 <i class="bi bi-house-door-fill"></i>
-                <span>Accueilggg</span>
+                <span>Accueil</span>
             </a>
             <a href="#" class="nav-item">
                 <i class="bi bi-building"></i>
-                <span>Entreprise</span>
+                <span>Entreprises</span>
             </a>
             <a href="#" class="nav-item">
                 <i class="bi bi-gear"></i>
@@ -21,21 +21,16 @@
 
         <div class="user-profile">
             <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-                class="rounded-circle" width="40" height="40" alt="User">
+                class="rounded-circle" width="40" height="40" alt="Utilisateur">
             <div class="user-info">
                 <div class="user-name">Mon Profil</div>
-                <small class="text-white-50">Voir profil</small>
+                <small class="text-white-50">Voir le profil</small>
             </div>
         </div>
     </aside>
 
     <main class="main-content">
         <header class="top-search-bar">
-            <div class="search-container">
-                <i class="bi bi-search search-icon"></i>
-                <input type="search" class="search-input"
-                    placeholder="Rechercher des offres, entreprises, compétences...">
-            </div>
             <div class="header-actions">
                 <button class="btn-icon" title="Notifications">
                     <i class="bi bi-bell"></i>
@@ -54,14 +49,19 @@
 
         <div class="feed-wrapper">
             <div class="feed-content">
+                <div class="search-container">
+                    <i class="bi bi-search search-icon"></i>
+                    <input type="search" class="search-input"
+                        placeholder="Rechercher des offres, entreprises, compétences...">
+                </div>
+
                 <div class="new-post-card">
                     Nouvelle publication <br><br>
                     <div class="d-flex align-items-center gap-3 mb-3">
                         <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
                             class="rounded-circle" width="48" height="48" alt="Avatar">
                         <input type="text" class="form-control post-input"
-                            placeholder="Partagez une nouvelle publication..."
-                            [(ngModel)]="newPostText">
+                            placeholder="Partagez une nouvelle publication..." [(ngModel)]="newPostText">
                     </div>
                     <div class="post-actions">
                         <button class="btn-post-action">
@@ -151,8 +151,7 @@
                         <div *ngIf="isCommentsVisible(offer.id)" class="comments-section">
                             <div class="add-comment">
                                 <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-                                    class="
-                                    rounded-circle" width="36" height="36" alt="Avatar">
+                                    class="rounded-circle" width="36" height="36" alt="Avatar">
                                 <input type="text" class="comment-input" placeholder="Écrivez un commentaire..."
                                     [(ngModel)]="newCommentText[offer.id]" (keyup.enter)="onAddComment(offer)">
                                 <button class="btn-send-comment" (click)="onAddComment(offer)"
@@ -161,7 +160,6 @@
                                 </button>
                             </div>
 
-                            Liste des commentaires
                             <div class="comments-list">
                                 <div *ngFor="let comment of offer.commentsList" class="comment-item">
                                     <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
@@ -187,89 +185,53 @@
             </div>
 
             <aside class="sidebar-suggestions">
-                <!-- Dans la sidebar des suggestions d'entreprises -->
-                <div class="suggestions-card">
-                    <h6 class="suggestions-title">
-                        <i class="bi bi-building me-2"></i>
-                        Entreprises à suivre
-                    </h6>
-
-                    <!-- Entreprise 1 -->
-                    <div class="suggestion-item">
-                        <img src="https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=80&h=80&fit=crop&crop=center"
-                            class="suggestion-avatar" alt="TechCorp">
-                        <div class="suggestion-details">
-                            <div class="suggestion-name">TechCorp France</div>
-                            <div class="suggestion-category">Technologie • IA</div>
-                        </div>
-                        <button class="btn-follow" (click)="followCompany($event, 'TechCorp France')" [attr.data-company]="'TechCorp France'">
-                            Suivre
-                        </button>
+                <!-- Zone des entreprises et hashtags déplacée à droite -->
+                <div class="companies-hashtags-zone">
+                    <div class="zone-header">
+                        <h4 class="zone-title">
+                            <i class="bi bi-building me-2"></i>
+                            Entreprises à suivre
+                        </h4>
                     </div>
-
-                    <!-- Entreprise 2 -->
-                    <div class="suggestion-item">
-                        <img src="https://images.unsplash.com/photo-1556655848-f3a79cc6d4a3?w=80&h=80&fit=crop&crop=center"
-                            class="suggestion-avatar" alt="DataLab">
-                        <div class="suggestion-details">
-                            <div class="suggestion-name">DataLab Analytics</div>
-                            <div class="suggestion-category">Data Science</div>
+                    <div class="zone-content">
+                        <div class="companies-list" *ngIf="!isLoadingCompanies">
+                            <div class="company-item" *ngFor="let company of suggestedCompanies">
+                                <img [src]="company.logo" class="company-logo" [alt]="company.name">
+                                <div class="company-info">
+                                    <div class="company-name">{{ company.name }}</div>
+                                    <div class="company-sector">{{ company.sector }}</div>
+                                </div>
+                                <button class="btn-follow-zone" (click)="followCompany($event, company.name)">
+                                    Suivre
+                                </button>
+                            </div>
                         </div>
-                        <button class="btn-follow" (click)="followCompany($event, 'DataLab Analytics')" [attr.data-company]="'DataLab Analytics'">
-                            Suivre
-                        </button>
-                    </div>
-
-                    <!-- Entreprise 3 -->
-                    <div class="suggestion-item">
-                        <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=80&h=80&fit=crop&crop=center"
-                            class="suggestion-avatar" alt="CloudTech">
-                        <div class="suggestion-details">
-                            <div class="suggestion-name">CloudTech Solutions</div>
-                            <div class="suggestion-category">Cloud • DevOps</div>
+                        <div *ngIf="isLoadingCompanies" class="text-center py-3">
+                            <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                <span class="visually-hidden">Chargement...</span>
+                            </div>
                         </div>
-                        <button class="btn-follow" (click)="followCompany($event, 'CloudTech Solutions')" [attr.data-company]="'CloudTech Solutions'">
-                            Suivre
-                        </button>
-                    </div>
-
-                    <!-- Entreprise 4 -->
-                    <div class="suggestion-item">
-                        <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=80&h=80&fit=crop&crop=center"
-                            class="suggestion-avatar" alt="DesignStudio">
-                        <div class="suggestion-details">
-                            <div class="suggestion-name">DesignStudio Pro</div>
-                            <div class="suggestion-category">Design • UX/UI</div>
-                        </div>
-                        <button class="btn-follow" (click)="followCompany($event, 'DesignStudio Pro')" [attr.data-company]="'DesignStudio Pro'">
-                            Suivre
-                        </button>
                     </div>
                 </div>
 
                 <div class="trending-card">
                     <h6 class="suggestions-title">
-                        <i class="bi bi-fire me-2"></i>
+                        <i class="bi bi-hash me-2"></i>
                         Tendances
                     </h6>
-                    <a href="#" class="trending-item">
-                        <div>
-                            <div class="trending-tag">#DéveloppementWeb</div>
-                            <small class="text-muted">2.5k publications</small>
+                    <div class="hashtags-list" *ngIf="!isLoadingHashtags">
+                        <a href="#" class="trending-item" *ngFor="let hashtag of trendingHashtags">
+                            <div>
+                                <div class="trending-tag">{{ hashtag.name }}</div>
+                                <small class="text-muted">{{ hashtag.posts }} publications</small>
+                            </div>
+                        </a>
+                    </div>
+                    <div *ngIf="isLoadingHashtags" class="text-center py-3">
+                        <div class="spinner-border spinner-border-sm text-primary" role="status">
+                            <span class="visually-hidden">Chargement...</span>
                         </div>
-                    </a>
-                    <a href="#" class="trending-item">
-                        <div>
-                            <div class="trending-tag">#Intelligence Artificielle</div>
-                            <small class="text-muted">1.8k publications</small>
-                        </div>
-                    </a>
-                    <a href="#" class="trending-item">
-                        <div>
-                            <div class="trending-tag">#RemoteWork</div>
-                            <small class="text-muted">3.2k publications</small>
-                        </div>
-                    </a>
+                    </div>
                 </div>
             </aside>
         </div>
@@ -277,13 +239,18 @@
 
     <input type="file" id="cvFile" (change)="onFileSelected($event)" accept=".pdf" style="display: none;">
 
-    <div *ngIf="isUploading" class="upload-overlay">
-        <div class="upload-modal">
-            <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
-                <span class="visually-hidden">Chargement...</span>
+    <!-- Barre de progression innovante pendant l'analyse CV -->
+    <div *ngIf="isUploading" class="progress-overlay">
+        <div class="progress-container">
+            <div class="spinner-wrapper">
+                <div class="rolling-spinner"></div>
+                <p class="progress-text">Analyse du CV en cours... ({{ progress }}%)</p>
             </div>
-            <h5>Analyse de votre CV en cours...</h5>
-            <p class="text-muted">Veuillez patienter quelques instants</p>
+            <div class="progress-bar">
+                <div class="progress-fill" [style.width.%]="progress"></div>
+            </div>
+            <p class="progress-subtitle">Extraction des compétences et génération d'évaluation personnalisée – quelques
+                instants...</p>
         </div>
     </div>
 </div>

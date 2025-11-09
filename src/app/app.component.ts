@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { JobFeedComponent } from "./components/job-feed/job-feed.component";
+import { CvAnalysisComponent } from './components/cv-analysis/cv-analysis.component';
+import { TestComponent } from './test/test.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterModule, JobFeedComponent],
+  imports: [RouterOutlet, RouterModule, JobFeedComponent, CvAnalysisComponent, TestComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

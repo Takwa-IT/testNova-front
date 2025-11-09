@@ -7,14 +7,6 @@
     </div>
 
     <div class="dialog-body" #modalContent>
-        <!-- Score Section -->
-        <div class="score-section" *ngIf="getScore() > 0">
-            <div class="score-card">
-                <h3>Score Global</h3>
-                <div class="score-value">{{ getScore() }}%</div>
-            </div>
-        </div>
-
         <!-- Skills Section avec Dropdown -->
         <div class="skills-section" *ngIf="getAllSkills().length > 0">
             <div class="section-header">

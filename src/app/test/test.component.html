@@ -1,0 +1,112 @@
+<div class="container">
+    <header class="header">
+        <div class="header-content">
+            <h1>{{ title }}</h1>
+            <p class="subtitle">Évaluation des compétences des candidats</p>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Progression innovante pendant la génération de test -->
+        <div *ngIf="loading" class="progress-overlay">
+            <div class="progress-container">
+                <div class="spinner-wrapper">
+                    <div class="rolling-spinner"></div>
+                    <p class="progress-text">Génération de test en cours... ({{ progress }}%)</p>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" [style.width.%]="progress"></div>
+                </div>
+                <p class="progress-subtitle">Création d'un test personnalisé basé sur vos compétences – quelques
+                    instants...</p>
+            </div>
+        </div>
+
+        <!-- Erreur -->
+        <div *ngIf="error && !loading" class="alert alert-error">
+            <strong>Erreur :</strong> {{ error }}
+        </div>
+
+        <!-- Succès -->
+        <div *ngIf="successMessage" class="alert alert-success">
+            <strong>Succès :</strong> {{ successMessage }}
+        </div>
+
+        <!-- Formulaire -->
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="!loading && questions.length > 0"
+            class="questionnaire-form">
+            <div class="problem-description">
+                <h2>Consigne</h2>
+                <p>Veuillez répondre aux questions suivantes en fonction de vos connaissances et de votre expérience.
+                    Assurez-vous de fournir des réponses précises et complètes.</p>
+            </div>
+
+            <div class="questions-container">
+                <div *ngFor="let question of questions; let i = index" class="question-group"
+                    [class.question-error]="isFieldInvalid(question.id)">
+                    <label [for]="'question_' + question.id" class="question-label">
+                        <span class="question-number">Q{{ i + 1 }}</span>
+                        {{ question.text }}
+                    </label>
+
+                    <!-- Choix multiples -->
+                    <div *ngIf="question.type === 'multiple'" class="options-group">
+                        <div *ngFor="let option of question.options" class="option">
+                            <input type="radio" [id]="'option_' + question.id + '_' + option"
+                                [name]="'question_' + question.id" [value]="option"
+                                [formControl]="getFormControl(question.id)" class="radio-input">
+                            <label [for]="'option_' + question.id + '_' + option" class="option-label">
+                                {{ option }}
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Nombre -->
+                    <input *ngIf="question.type === 'number'" type="number" [id]="'question_' + question.id"
+                        [formControl]="getFormControl(question.id)" class="text-input" placeholder="Entrez un nombre"
+                        min="0">
+
+                    <!-- Texte -->
+                    <input *ngIf="question.type === 'text'" type="text" [id]="'question_' + question.id"
+                        [formControl]="getFormControl(question.id)" class="text-input"
+                        placeholder="Entrez votre réponse">
+
+                    <!-- Message d'erreur -->
+                    <div *ngIf="isFieldInvalid(question.id)" class="error-message">
+                        {{ getErrorMessage(question.id) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem-description">
+                <h2>Problème</h2>
+                <p *ngIf="problem; else defaultProblem">{{ problem }}</p>
+                <ng-template #defaultProblem>
+                    <p>Aucun problème généré. Veuillez patienter.</p>
+                </ng-template>
+            </div>
+
+            <!-- Zone de texte pour la solution du problème -->
+            <div class="solution-section">
+                <label for="problemSolution" class="solution-label">
+                    <span class="solution-number">Solution</span>
+                    Proposez votre solution détaillée au problème décrit ci-dessus
+                </label>
+                <textarea id="problemSolution" formControlName="problemSolution" class="solution-textarea"
+                    placeholder="Décrivez votre approche étape par étape, les technologies utilisées, et comment vous résoudriez le scénario..."></textarea>
+                <div *ngIf="isSolutionInvalid()" class="error-message">
+                    {{ getSolutionErrorMessage() }}
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" [disabled]="submitting">
+                    {{ submitting ? 'Envoi en cours...' : 'Soumettre le questionnaire' }}
+                </button>
+                <button type="button" class="btn btn-secondary" (click)="form.reset()">
+                    Réinitialiser
+                </button>
+            </div>
+        </form>
+    </main>
+</div>
