@@ -1,9 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { QuestionnaireServiceService, Question, QuestionnaireResponse } from '../services/questionnaire-service.service';
-import { DataService } from '../services/data.service';
-import type { CvAnalysis } from '../models/cv-analysis.model';
+import { QuestionnaireServiceService, Question, QuestionnaireResponse } from '../../services/questionnaire-service.service';
+import { DataService } from '../../services/data.service';
+import type { CvAnalysis } from '../../models/cv-analysis.model';
 import { take, timeout } from 'rxjs/operators';
 
 @Component({

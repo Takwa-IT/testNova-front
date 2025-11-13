@@ -7,8 +7,8 @@ import { Offer } from '../models/offer.model';
 import { CvAnalysis } from '../models/cv-analysis.model';
 import { environment } from '../../environments/environment';
 
-const ADZUNA_URL = 'https://api.adzuna.com/v1/api/jobs/gb/search/30?app_id=04af4a1c&app_key=37926d2f11a44c707f25b87c4fd3a828%09'; // Base URL Adzuna
-const BACKEND_URL = 'http://localhost:8081/api/cv/analyze'; // Backend CV analysis endpoint
+const ADZUNA_URL = 'https://api.adzuna.com/v1/api/jobs'; // Base URL Adzuna
+const BACKEND_URL = 'http://localhost:8081/'; // Backend CV analysis endpoint
 @Injectable({
   providedIn: 'root'
 })
@@ -93,6 +93,23 @@ export class ApiService {
   // Reste du code inchangé (analyse CV, etc.)
   analyzeCvWithAI(cvText: string, ownerName: string = ''): Observable<CvAnalysis> {
     const body = { textcv: cvText, ownerName };
-    return this.http.post<CvAnalysis>(BACKEND_URL, body, this.httpOptions);
+    return this.http.post<CvAnalysis>(`${BACKEND_URL}analysecv`, body, this.httpOptions);
+
+  }  // Méthode pour récupérer les analyses de CV d'un utilisateur
+  getUserCvAnalyses(userId: number): Observable<CvAnalysis[]> {
+    return this.http.get<CvAnalysis[]>(`${BACKEND_URL}cvparuser/${userId}`);
   }
+  // Nouvelle méthode pour analyser un CV avec une offre spécifique
+  analyzeCvWithOffer(cvText: string, offer: any, ownerName: string = ''): Observable<CvAnalysis> {
+    const body = {
+      cvText: cvText,  // Changé de textcv à cvText
+      offre: offer,    // Changé de offer à offre
+      ownerName
+    };
+  
+    return this.http.post<CvAnalysis>(`${BACKEND_URL}analyse-offre`, body, this.httpOptions);
+  }
+  
+
+
 }

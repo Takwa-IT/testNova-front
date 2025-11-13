@@ -19,14 +19,15 @@
             </a>
         </nav>
 
-        <div class="user-profile">
-            <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-                class="rounded-circle" width="40" height="40" alt="Utilisateur">
-            <div class="user-info">
-                <div class="user-name">Mon Profil</div>
-                <small class="text-white-50">Voir le profil</small>
-            </div>
-        </div>
+       <a routerLink="/profile" class="user-profile" style="text-decoration: none; color: inherit;">
+    <img src="https://www.gravatar.com/avatar/?d=mp&s=40"
+         class="rounded-circle" width="40" height="40" alt="Utilisateur">
+    <div class="user-info">
+        <div class="user-name">Mon Profil</div>
+        <small class="text-white-50">Voir le profil</small>
+    </div>
+</a>
+
     </aside>
 
     <main class="main-content">
@@ -58,7 +59,7 @@
                 <div class="new-post-card">
                     Nouvelle publication <br><br>
                     <div class="d-flex align-items-center gap-3 mb-3">
-                        <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                        <img src="https://www.gravatar.com/avatar/?d=mp&s=48"
                             class="rounded-circle" width="48" height="48" alt="Avatar">
                         <input type="text" class="form-control post-input"
                             placeholder="Partagez une nouvelle publication..." [(ngModel)]="newPostText">
@@ -150,7 +151,7 @@
 
                         <div *ngIf="isCommentsVisible(offer.id)" class="comments-section">
                             <div class="add-comment">
-                                <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                                <img src="https://www.gravatar.com/avatar/?d=mp&s=36"
                                     class="rounded-circle" width="36" height="36" alt="Avatar">
                                 <input type="text" class="comment-input" placeholder="Écrivez un commentaire..."
                                     [(ngModel)]="newCommentText[offer.id]" (keyup.enter)="onAddComment(offer)">
@@ -162,7 +163,7 @@
 
                             <div class="comments-list">
                                 <div *ngFor="let comment of offer.commentsList" class="comment-item">
-                                    <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                                    <img src="https://www.gravatar.com/avatar/?d=mp&s=36"
                                         class="rounded-circle" width="36" height="36" alt="Avatar">
                                     <div class="comment-content">
                                         <div class="comment-header">

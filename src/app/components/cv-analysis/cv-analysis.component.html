@@ -105,6 +105,31 @@
             </div>
         </div>
 
+        <!-- Matching Results Section -->
+        <div class="matching-section" *ngIf="data?.analysis?.matchingScore !== undefined">
+            <div class="matching-card">
+                <h4 class="matching-title">Résultats du matching avec l'offre</h4>
+                <div class="matching-score">
+                    <p class="score-label">Score de compatibilité:</p>
+                    <p class="score-value">{{ data.analysis.matchingScore }}%</p>
+                </div>
+                <div class="matching-details">
+                    <div class="matched-skills" *ngIf="data.analysis.matchedSkills?.length > 0">
+                        <p class="detail-label">Compétences correspondantes:</p>
+                        <div class="skills-list">
+                            <span *ngFor="let skill of data.analysis.matchedSkills" class="skill-matched">{{ skill }}</span>
+                        </div>
+                    </div>
+                    <div class="missing-skills" *ngIf="data.analysis.missingSkills?.length > 0">
+                        <p class="detail-label">Compétences à développer:</p>
+                        <div class="skills-list">
+                            <span *ngFor="let skill of data.analysis.missingSkills" class="skill-missing">{{ skill }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Empty State -->
         <div class="empty-state" *ngIf="!hasValidData()">
             <div class="empty-icon">📄</div>
@@ -120,5 +145,7 @@
         <button type="button" class="btn btn-next" (click)="onNextTest()" [disabled]="!hasValidData()">
             ➜ Passer au test
         </button>
+
+  
     </div>
 </div>

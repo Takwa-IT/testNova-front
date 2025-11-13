@@ -1,0 +1,65 @@
+/* profile-history.component.css */
+
+.profile-history {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 0 15px;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.profile-history h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #2c3e50;
+}
+
+.cv-analysis-card {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cv-analysis-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.cv-analysis-card h3,
+.cv-analysis-card h4 {
+  margin-top: 10px;
+  margin-bottom: 8px;
+  color: #34495e;
+}
+
+.cv-analysis-card p {
+  margin: 5px 0 10px 0;
+  line-height: 1.5;
+}
+
+.cv-analysis-card ul {
+  list-style-type: disc;
+  margin-left: 20px;
+  padding-left: 0;
+}
+
+.cv-analysis-card li {
+  margin-bottom: 5px;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 15px 0;
+}
+
+div[ngIf="loading"], div[ngIf="errorMessage"] {
+  text-align: center;
+  font-style: italic;
+  color: #888;
+  margin-bottom: 15px;
+}

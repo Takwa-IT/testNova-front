@@ -151,6 +151,12 @@
     border: 3px solid #3b82f6;
     box-shadow: var(--glow-blue);
 }
+.user-profile:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* effet visuel léger au survol */
+    border-radius: 10px;
+    cursor: pointer;
+}
+
 
 .sidebar-nav:hover .user-name,
 .sidebar-nav:hover .user-profile small {

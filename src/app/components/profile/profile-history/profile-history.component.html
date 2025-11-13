@@ -1,0 +1,29 @@
+<div class="profile-history">
+
+  <h2>Historique de vos analyses de CV</h2>
+
+  <div *ngIf="loading">Chargement en cours...</div>
+  <div *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <div *ngIf="cvAnalyses.length === 0 && !loading">Aucune analyse disponible.</div>
+
+  <div *ngFor="let analysis of cvAnalyses" class="cv-analysis-card">
+    <h3>Résumé :</h3>
+    <p>{{ analysis.resume }}</p>
+
+    <h4>Compétences :</h4>
+    <ul>
+      <li *ngFor="let skill of analysis.skills">{{ skill.name }} ({{ skill.level }})</li>
+    </ul>
+
+    <h4>Expériences :</h4>
+    <ul>
+      <li *ngFor="let exp of analysis.experiences">
+        {{ exp.role }} chez {{ exp.company }} ({{ exp.year }})
+      </li>
+    </ul>
+
+    <hr>
+  </div>
+
+</div>
