@@ -8,7 +8,7 @@ import { CvAnalysis } from '../models/cv-analysis.model';
 import { environment } from '../../environments/environment';
 
 const ADZUNA_URL = 'https://api.adzuna.com/v1/api/jobs'; // Base URL Adzuna
-const BACKEND_URL = 'http://localhost:8081/'; // Backend CV analysis endpoint
+const BACKEND_URL = 'http://localhost:8082/'; // Backend CV analysis endpoint
 @Injectable({
   providedIn: 'root'
 })
@@ -106,10 +106,10 @@ export class ApiService {
       offre: offer,    // Changé de offer à offre
       ownerName
     };
-  
+
     return this.http.post<CvAnalysis>(`${BACKEND_URL}analyse-offre`, body, this.httpOptions);
   }
-  
+
 
 
 }

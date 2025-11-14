@@ -24,7 +24,7 @@ export interface VerifyRequest {
     providedIn: 'root'
 })
 export class AuthService {
-    private apiUrl = 'http://localhost:8081/api/auth';  // Adjust to your Spring Boot URL
+    private apiUrl = 'http://localhost:8082/api/auth';  // Adjust to your Spring Boot URL
 
     constructor(private http: HttpClient, private router: Router) { }
 

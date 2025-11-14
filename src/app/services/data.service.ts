@@ -7,7 +7,7 @@ export class DataService {
   private cvAnalysisSource = new BehaviorSubject<any>(null);
   cvAnalysis$ = this.cvAnalysisSource.asObservable();
 
-  private apiUrl = 'http://localhost:8081/api/cv/analyze';  // Fixed: Use /api/cv/analyze to match backend
+  private apiUrl = 'http://localhost:8082/api/cv/analyze';  // Fixed: Use /api/cv/analyze to match backend
 
   constructor(private http: HttpClient) { }
 

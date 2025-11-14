@@ -6,35 +6,42 @@ import type { CvAnalysis } from '../models/cv-analysis.model'; // Adjust path as
 export interface Question {
   id: number;
   text: string;
-  type: "multiple" | "number" | "text";
+  type: 'multiple' | 'number' | 'text';
   options?: string[];
 }
 
 export interface QuestionnaireResponse {
   questions: Question[];
-  problem: {
-    description: string;
-  };
+  problem: { description: string };
 }
+
+// src/app/services/questionnaire-service.service.ts
 
 @Injectable({
   providedIn: 'root'
 })
 export class QuestionnaireServiceService {
-  private apiUrl = 'http://localhost:8081/api/test/generateTest'; // Backend endpoint
+  // CORRIGÉ : Utilise le bon port du backend
+  private apiUrl = 'http://localhost:8082/api/test';
 
   constructor(private http: HttpClient) { }
 
   generateTest(analysis: CvAnalysis): Observable<QuestionnaireResponse> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-    return this.http.post<QuestionnaireResponse>(this.apiUrl, analysis, { headers });
+    return this.http.post<QuestionnaireResponse>(`${this.apiUrl}/generateTest`, analysis);
   }
 
-  // Submit remains as-is (implement backend /submit if needed)
   submitAnswers(answers: any): Observable<any> {
-    console.warn('Submit endpoint not implemented in backend yet');
     return this.http.post(`${this.apiUrl}/submit`, answers);
+  }
+
+  submitAndCorrect(answers: any): Observable<any> {
+    const payload = {
+      responses: answers.responses,
+      problemSolution: answers.problemSolution,
+      originalQuestions: answers.originalQuestions,
+      problemDescription: answers.problemDescription
+    };
+
+    return this.http.post(`${this.apiUrl}/correct`, payload);
   }
 }

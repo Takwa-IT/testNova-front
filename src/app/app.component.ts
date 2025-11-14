@@ -6,7 +6,7 @@ import { TestComponent } from './components/test/test.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterModule, JobFeedComponent, CvAnalysisComponent, TestComponent],
+  imports: [RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

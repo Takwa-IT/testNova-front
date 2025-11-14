@@ -38,7 +38,7 @@ export class JobFeedComponent implements OnInit, OnDestroy {
     private offersService: OffersService,
     private followedCompaniesService: FollowedCompaniesService,
     private cvAnalysisService: CvAnalysisService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadOffers();
@@ -211,5 +211,13 @@ export class JobFeedComponent implements OnInit, OnDestroy {
     }, 0);
 
     return Math.round(totalScore / skills.length);
+  }
+
+  // === PROGRESSION ANALYSE CV ===
+  getCvAnalysisStep(): string {
+    if (this.progress < 30) return "Lecture du PDF et extraction du texte...";
+    if (this.progress < 60) return "Analyse des compétences techniques...";
+    if (this.progress < 90) return "Évaluation du niveau et génération du test...";
+    return "Finalisation de l’évaluation personnalisée...";
   }
 }

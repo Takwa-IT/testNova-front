@@ -109,21 +109,32 @@
         <div class="matching-section" *ngIf="data?.analysis?.matchingScore !== undefined">
             <div class="matching-card">
                 <h4 class="matching-title">Résultats du matching avec l'offre</h4>
+
+                <!-- Score -->
                 <div class="matching-score">
                     <p class="score-label">Score de compatibilité:</p>
                     <p class="score-value">{{ data.analysis.matchingScore }}%</p>
                 </div>
+
+                <!-- Détails -->
                 <div class="matching-details">
+                    <!-- Compétences correspondantes -->
                     <div class="matched-skills" *ngIf="data.analysis.matchedSkills?.length > 0">
                         <p class="detail-label">Compétences correspondantes:</p>
                         <div class="skills-list">
-                            <span *ngFor="let skill of data.analysis.matchedSkills" class="skill-matched">{{ skill }}</span>
+                            <span *ngFor="let skill of data.analysis.matchedSkills" class="skill-matched">
+                                {{ skill }}
+                            </span>
                         </div>
                     </div>
+
+                    <!-- Compétences manquantes -->
                     <div class="missing-skills" *ngIf="data.analysis.missingSkills?.length > 0">
                         <p class="detail-label">Compétences à développer:</p>
                         <div class="skills-list">
-                            <span *ngFor="let skill of data.analysis.missingSkills" class="skill-missing">{{ skill }}</span>
+                            <span *ngFor="let skill of data.analysis.missingSkills" class="skill-missing">
+                                {{ skill }}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -146,6 +157,6 @@
             ➜ Passer au test
         </button>
 
-  
+
     </div>
 </div>

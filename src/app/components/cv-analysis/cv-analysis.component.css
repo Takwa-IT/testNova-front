@@ -854,3 +854,229 @@
 .cv-analysis-dialog {
     animation: modalEnter 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* === MATCHING SECTION - STYLE ÉLÉGANT & COHÉRENT === */
+.matching-section {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow:
+        0 8px 32px -8px rgba(59, 130, 246, 0.1),
+        0 4px 12px -4px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeInUp 0.6s ease forwards;
+    animation-delay: 0.3s;
+}
+
+.matching-section:hover {
+    box-shadow:
+        0 12px 40px -8px rgba(59, 130, 246, 0.15),
+        0 8px 20px -4px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+}
+
+.matching-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(96, 165, 250, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    border-radius: 24px;
+}
+
+.matching-card {
+    position: relative;
+    z-index: 1;
+}
+
+/* Titre */
+.matching-title {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e293b;
+    position: relative;
+    padding-bottom: 0.75rem;
+}
+
+.matching-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.matching-title:hover::after {
+    width: 100px;
+}
+
+/* Score */
+.matching-score {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.25rem;
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    border-radius: 20px;
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    box-shadow: 0 4px 12px -4px rgba(59, 130, 246, 0.08);
+}
+
+.score-label {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #3b82f6;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.score-value {
+    margin: 0;
+    font-size: 2.25rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+    letter-spacing: -0.05em;
+}
+
+/* Détails */
+.matching-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.matched-skills,
+.missing-skills {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.matched-skills .detail-label,
+.missing-skills .detail-label {
+    font-size: 0.875rem;
+    color: #3b82f6;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+/* BADGES UNIFORMISÉS – BLEU CLAIR / BLEU FONCÉ */
+.skill-matched,
+.skill-missing {
+    padding: 0.75rem 1.25rem;
+    border-radius: 50px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: fit-content;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(4px);
+}
+
+/* COMPÉTENCES CORRESPONDANTES → BLEU CLAIR */
+.skill-matched {
+    background: linear-gradient(135deg, #93c5fd 0%, #60a5fa 100%);
+    color: #1e40af;
+    border-color: #93c5fd;
+}
+
+/* COMPÉTENCES À DÉVELOPPER → BLEU FONCÉ */
+.skill-missing {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    border-color: #3b82f6;
+}
+
+/* Effet de survol identique aux autres badges */
+.skill-matched::before,
+.skill-missing::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.skill-matched:hover::before,
+.skill-missing:hover::before {
+    left: 100%;
+}
+
+.skill-matched:hover,
+.skill-missing:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Animation d'entrée */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .matching-score {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+
+    .score-value {
+        font-size: 1.75rem;
+    }
+
+    .skills-list {
+        justify-content: center;
+    }
+
+    .skill-matched,
+    .skill-missing {
+        font-size: 0.8rem;
+        padding: 0.6rem 1rem;
+    }
+}

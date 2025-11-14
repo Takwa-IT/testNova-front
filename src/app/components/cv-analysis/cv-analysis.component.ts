@@ -9,7 +9,7 @@ import { ApiService } from "../../services/api.service";
 @Component({
   selector: "app-cv-analysis",
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: "./cv-analysis.component.html",
   styleUrls: ["./cv-analysis.component.css"],
 })
