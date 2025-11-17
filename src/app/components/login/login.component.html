@@ -1,0 +1,73 @@
+<!-- src/app/components/auth/login/login.component.html -->
+<div class="login-container">
+    <div class="login-card">
+        <!-- Header -->
+        <div class="login-header">
+            <div class="login-logo">
+                <i>⚡</i>
+            </div>
+            <h1 class="login-title">Authentification</h1>
+        </div>
+
+        <!-- Form -->
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+            <!-- Email -->
+            <div class="form-group">
+                <label class="form-label">Adresse Email</label>
+                <input type="email" formControlName="email" class="form-input" placeholder="elementary22lb@gmail.com"
+                    [class.error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+                <div class="error-message" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+                    Entrez un email valide </div>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label class="form-label">Mot de passe</label>
+                <input type="password" formControlName="motDePasse" class="form-input" placeholder="Enter your password"
+                    [class.error]="loginForm.get('motDePasse')?.invalid && loginForm.get('motDePasse')?.touched">
+                <div class="error-message"
+                    *ngIf="loginForm.get('motDePasse')?.invalid && loginForm.get('motDePasse')?.touched">
+                    Mot de passe doit etre au moins 6 characters
+                </div>
+            </div>
+
+            <!-- Remember & Forgot -->
+            <div class="remember-forgot">
+                <label class="remember-me" (click)="toggleRememberMe()">
+                    <div class="checkbox" [class.checked]="rememberMe">
+                        <span *ngIf="rememberMe">✓</span>
+                    </div>
+                    <span> Ne pas oublier moi </span>
+                </label>
+
+                <!-- Remplacer le lien "Forgot Password" existant -->
+                <div class="remember-forgot">
+                    <a (click)="onForgotPassword()" class="forgot-password">
+                        Mot de passe oublié ?
+                    </a>
+                </div>
+            </div>
+
+            <!-- Error Message -->
+            <div *ngIf="errorMessage" class="error-message" style="text-align: center; margin: 1rem 0;">
+                {{ errorMessage }}
+            </div>
+
+            <!-- Sign In Button -->
+            <button type="submit" class="login-btn" [disabled]="!loginForm.valid || isLoading"
+                (click)="navigateToFeed()">
+                <span *ngIf="isLoading" class="loading"></span>
+                {{ isLoading ? 'Signing In...' : 'Sign In' }}
+            </button>
+        </form>
+
+        <!-- Register Section -->
+        <div class="register-section">
+            <p class="register-text">Pas de compte?</p>
+            <a routerLink="/register" class="register-btn" (click)="navigateToRegister()">
+                <span>Creer un compte</span>
+                <i>→</i>
+            </a>
+        </div>
+    </div>
+</div>

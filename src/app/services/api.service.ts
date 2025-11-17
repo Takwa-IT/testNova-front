@@ -7,8 +7,9 @@ import { Offer } from '../models/offer.model';
 import { CvAnalysis } from '../models/cv-analysis.model';
 import { environment } from '../../environments/environment';
 
-const ADZUNA_URL = 'https://api.adzuna.com/v1/api/jobs'; // Base URL Adzuna
-const BACKEND_URL = 'http://localhost:8082/'; // Backend CV analysis endpoint
+const ADZUNA_URL = 'https://api.adzuna.com/v1/api/jobs';
+const BACKEND_URL = '/api'; // Backend base URL
+
 @Injectable({
   providedIn: 'root'
 })
@@ -20,6 +21,18 @@ export class ApiService {
   };
 
   constructor(private http: HttpClient) { }
+
+  public readonly apiUrl = environment.apiUrl || '/api/auth';
+
+  // Method for authentication endpoints
+  getAuthUrl(endpoint: string): string {
+    return `${this.apiUrl}/${endpoint}`;
+  }
+
+  // FIXED: Method for backend endpoints
+  private getBackendUrl(endpoint: string): string {
+    return `${BACKEND_URL}/${endpoint}`.replace(/\/+/g, '/');
+  }
 
   // Méthode modifiée : Récupère offres depuis API externe Adzuna (pas de DB)
   getExternalOffers(what: string = 'developer', location: string = 'france'): Observable<Offer[]> {
@@ -90,16 +103,18 @@ export class ApiService {
     );
   }
 
-  // Reste du code inchangé (analyse CV, etc.)
+  // FIXED: Use getBackendUrl method consistently
   analyzeCvWithAI(cvText: string, ownerName: string = ''): Observable<CvAnalysis> {
     const body = { textcv: cvText, ownerName };
-    return this.http.post<CvAnalysis>(`${BACKEND_URL}analysecv`, body, this.httpOptions);
-
-  }  // Méthode pour récupérer les analyses de CV d'un utilisateur
-  getUserCvAnalyses(userId: number): Observable<CvAnalysis[]> {
-    return this.http.get<CvAnalysis[]>(`${BACKEND_URL}cvparuser/${userId}`);
+    return this.http.post<CvAnalysis>(this.getBackendUrl('/analysecv'), body, this.httpOptions);
   }
-  // Nouvelle méthode pour analyser un CV avec une offre spécifique
+
+  // FIXED: Use getBackendUrl method
+  getUserCvAnalyses(userId: number): Observable<CvAnalysis[]> {
+    return this.http.get<CvAnalysis[]>(this.getBackendUrl(`cvparuser/${userId}`));
+  }
+
+  // FIXED: Use getBackendUrl method - this will create the correct URL: /api/analyse-offre
   analyzeCvWithOffer(cvText: string, offer: any, ownerName: string = ''): Observable<CvAnalysis> {
     const body = {
       cvText: cvText,  // Changé de textcv à cvText
@@ -107,9 +122,6 @@ export class ApiService {
       ownerName
     };
 
-    return this.http.post<CvAnalysis>(`${BACKEND_URL}analyse-offre`, body, this.httpOptions);
+    return this.http.post<CvAnalysis>('http://localhost:8082/api/analyse-offre', body, this.httpOptions);
   }
-
-
-
 }
