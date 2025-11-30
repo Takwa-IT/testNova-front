@@ -45,12 +45,18 @@ export class LoginComponent {
         this.clearSavedCredentials();
       }
 
+      console.log('[LoginComponent] Form values:', this.loginForm.value);
+
       this.authService.login(this.loginForm.value).subscribe({
         next: (response) => {
+          console.log('[LoginComponent] ✅ Login success, navigating to /feed');
           this.isLoading = false;
           this.router.navigate(['/feed']);
         },
         error: (error) => {
+          console.error('[LoginComponent] ❌ Login error:', error);
+          console.error('[LoginComponent] Error status:', error.status);
+          console.error('[LoginComponent] Error body:', error.error);
           this.isLoading = false;
           this.errorMessage = error.error?.message || error.error?.error || 'Erreur de connexion';
         }
@@ -90,12 +96,11 @@ export class LoginComponent {
     localStorage.removeItem('testnova_credentials');
   }
 
-  // Méthode pour le lien "Forgot Password"
+  // Navigation vers la page "Mot de passe oublié"
   onForgotPassword() {
-    // Implémentation de la réinitialisation de mot de passe
-    this.errorMessage = 'Fonctionnalité de réinitialisation de mot de passe à implémenter';
-    // this.router.navigate(['/forgot-password']);
+    this.router.navigate(['/forgot-password']);
   }
+
   // Dans login.component.ts
   navigateToRegister() {
     this.router.navigate(['/register']);

@@ -8,7 +8,8 @@ import { CvAnalysis } from '../models/cv-analysis.model';
 import { environment } from '../../environments/environment';
 
 const ADZUNA_URL = 'https://api.adzuna.com/v1/api/jobs';
-const BACKEND_URL = '/api'; // Backend base URL
+// Keep a relative fallback but prefer full backend URL from environment
+const RELATIVE_BACKEND_PATH = '/api'; // Backend base path when host not provided
 
 @Injectable({
   providedIn: 'root'
@@ -22,16 +23,33 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
 
-  public readonly apiUrl = environment.apiUrl || '/api/auth';
-
-  // Method for authentication endpoints
-  getAuthUrl(endpoint: string): string {
-    return `${this.apiUrl}/${endpoint}`;
+  // Build backend host-aware base paths. If environment.apiUrl is set (eg. http://localhost:8082)
+  // we use it as host and append the API path. Otherwise we fall back to relative '/api'.
+  private get backendBase(): string {
+    const host = (environment.apiUrl || '').toString().replace(/\/$/, '');
+    return host ? `${host}/api` : '/api';
   }
 
-  // FIXED: Method for backend endpoints
+  // Backend host WITHOUT /api prefix (for endpoints like /analysecv, /cvparuser)
+  private get backendHost(): string {
+    const host = (environment.apiUrl || '').toString().replace(/\/$/, '');
+    return host || '';
+  }
+
+  // Method for authentication endpoints: returns full url like
+  // http://localhost:8082/api/auth/login
+  getAuthUrl(endpoint: string): string {
+    return `${this.backendBase}/auth/${endpoint}`;
+  }
+
+  // Method for backend endpoints WITH /api prefix
   private getBackendUrl(endpoint: string): string {
-    return `${BACKEND_URL}/${endpoint}`.replace(/\/+/g, '/');
+    return `${this.backendBase}/${endpoint}`;
+  }
+
+  // Method for backend endpoints WITHOUT /api prefix (matches backend controller without @RequestMapping("/api"))
+  private getDirectUrl(endpoint: string): string {
+    return `${this.backendHost}/${endpoint}`;
   }
 
   // Méthode modifiée : Récupère offres depuis API externe Adzuna (pas de DB)
@@ -103,25 +121,28 @@ export class ApiService {
     );
   }
 
-  // FIXED: Use getBackendUrl method consistently
-  analyzeCvWithAI(cvText: string, ownerName: string = ''): Observable<CvAnalysis> {
-    const body = { textcv: cvText, ownerName };
-    return this.http.post<CvAnalysis>(this.getBackendUrl('/analysecv'), body, this.httpOptions);
+  // Backend endpoint: POST /analysecv (sans /api)
+  analyzeCvWithAI(cvText: string, ownerName: string = '', userId?: number): Observable<CvAnalysis> {
+    const body = { textcv: cvText, ownerName, userId };
+    return this.http.post<CvAnalysis>(this.getDirectUrl('analysecv'), body, this.httpOptions);
   }
 
-  // FIXED: Use getBackendUrl method
+  // Backend endpoint: GET /cvparuser/{id} (sans /api)
   getUserCvAnalyses(userId: number): Observable<CvAnalysis[]> {
-    return this.http.get<CvAnalysis[]>(this.getBackendUrl(`cvparuser/${userId}`));
+    return this.http.get<CvAnalysis[]>(this.getDirectUrl(`cvparuser/${userId}`));
   }
 
-  // FIXED: Use getBackendUrl method - this will create the correct URL: /api/analyse-offre
-  analyzeCvWithOffer(cvText: string, offer: any, ownerName: string = ''): Observable<CvAnalysis> {
+  // Backend endpoint: POST /api/analyse-offre (avec /api)
+  analyzeCvWithOffer(cvText: string, offer: any, ownerName: string = '', userId?: number): Observable<CvAnalysis> {
     const body = {
-      cvText: cvText,  // Changé de textcv à cvText
-      offre: offer,    // Changé de offer à offre
-      ownerName
+      textcv: cvText,   // Clé attendue par le backend
+      cvText: cvText,   // Compatibilité si le backend utilise ce nom
+      offre: offer,
+      ownerName,
+      userId
     };
+    console.debug('[ApiService] POST analyse-offre:', this.getBackendUrl('analyse-offre'), body);
 
-    return this.http.post<CvAnalysis>('http://localhost:8082/api/analyse-offre', body, this.httpOptions);
+    return this.http.post<CvAnalysis>(this.getBackendUrl('analyse-offre'), body, this.httpOptions);
   }
 }

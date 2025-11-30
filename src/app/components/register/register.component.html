@@ -81,9 +81,8 @@
             </div>
 
             <!-- Submit Button -->
-            <button type="submit" class="register-btn" [disabled]="!registerForm.valid || isLoading || emailExists"
-                (click)="navigateToFeed() ">
-                <span *ngIf=" isLoading" class="loading"></span>
+            <button type="submit" class="register-btn" [disabled]="!registerForm.valid || isLoading || emailExists">
+                <span *ngIf="isLoading" class="loading"></span>
                 {{ isLoading ? 'Création...' : 'Créer mon compte' }}
             </button>
         </form>

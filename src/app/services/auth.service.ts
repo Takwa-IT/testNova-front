@@ -29,21 +29,38 @@ export class AuthService {
     }
 
     login(loginRequest: LoginRequest): Observable<JwtResponse> {
-        return this.http.post<JwtResponse>(
-            this.apiService.getAuthUrl('login'),
-            loginRequest
-        ).pipe(
+        const url = this.apiService.getAuthUrl('login');
+        // Envoyer UNIQUEMENT les champs attendus par le backend
+        const payload = {
+            email: loginRequest.email,
+            motDePasse: (loginRequest as any).motDePasse
+        };
+        console.log('[AuthService] 🔐 LOGIN REQUEST');
+        console.log('[AuthService] URL:', url);
+        console.log('[AuthService] Payload:', JSON.stringify(payload, null, 2));
+        
+        return this.http.post<JwtResponse>(url, payload).pipe(
             tap(response => {
+                console.log('[AuthService] ✅ LOGIN SUCCESS');
+                console.log('[AuthService] Response:', response);
+                console.log('[AuthService] Token:', response.token ? response.token.substring(0, 30) + '...' : 'MISSING');
                 this.storeAuthData(response);
             })
         );
     }
 
     register(registerRequest: RegisterRequest): Observable<any> {
-        return this.http.post(
-            this.apiService.getAuthUrl('register'),
-            registerRequest
-        );
+        const url = this.apiService.getAuthUrl('register');
+        // Envoyer UNIQUEMENT les champs attendus par le backend
+        const payload = {
+            nom: registerRequest.nom,
+            prenom: registerRequest.prenom,
+            email: registerRequest.email,
+            motDePasse: (registerRequest as any).motDePasse,
+            role: registerRequest.role
+        };
+        console.debug('[AuthService] POST register', url, payload);
+        return this.http.post(url, payload);
     }
 
     checkEmail(email: string): Observable<{ exists: boolean }> {
@@ -66,6 +83,19 @@ export class AuthService {
         );
     }
 
+    verifyEmail(token: string): Observable<any> {
+        return this.http.get(
+            `${this.apiService.getAuthUrl('verify-email')}?token=${token}`
+        );
+    }
+
+    resendVerificationEmail(email: string): Observable<any> {
+        return this.http.post(
+            this.apiService.getAuthUrl('resend-verification'),
+            { email }
+        );
+    }
+
     loginWithGoogle(): Observable<any> {
         // Implémentation de la connexion Google
         return this.http.post(
@@ -81,7 +111,10 @@ export class AuthService {
             nom: response.nom,
             prenom: response.prenom,
             email: response.email,
-            roles: response.roles
+            roles: response.roles,
+            telephone: response.telephone,
+            ville: response.ville,
+            posteRecherche: response.posteRecherche
         };
         localStorage.setItem('currentUser', JSON.stringify(user));
         this.currentUserSubject.next(user);
@@ -128,6 +161,19 @@ export class AuthService {
                     this.currentUserSubject.next(updatedUser);
                 }
             })
+        );
+    }
+
+    changePassword(currentPassword: string, newPassword: string): Observable<any> {
+        return this.http.post(
+            this.apiService.getAuthUrl('change-password'),
+            { currentPassword, newPassword }
+        );
+    }
+
+    deleteAccount(): Observable<any> {
+        return this.http.delete(this.apiService.getAuthUrl('delete-account')).pipe(
+            tap(() => this.logout())
         );
     }
 }

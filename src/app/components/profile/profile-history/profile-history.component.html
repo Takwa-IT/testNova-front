@@ -1,29 +1,111 @@
 <div class="profile-history">
-
-  <h2>Historique de vos analyses de CV</h2>
-
-  <div *ngIf="loading">Chargement en cours...</div>
-  <div *ngIf="errorMessage">{{ errorMessage }}</div>
-
-  <div *ngIf="cvAnalyses.length === 0 && !loading">Aucune analyse disponible.</div>
-
-  <div *ngFor="let analysis of cvAnalyses" class="cv-analysis-card">
-    <h3>Résumé :</h3>
-    <p>{{ analysis.resume }}</p>
-
-    <h4>Compétences :</h4>
-    <ul>
-      <li *ngFor="let skill of analysis.skills">{{ skill.name }} ({{ skill.level }})</li>
-    </ul>
-
-    <h4>Expériences :</h4>
-    <ul>
-      <li *ngFor="let exp of analysis.experiences">
-        {{ exp.role }} chez {{ exp.company }} ({{ exp.year }})
-      </li>
-    </ul>
-
-    <hr>
+  <!-- Header -->
+  <div class="history-header">
+    <div class="header-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+        <polyline points="14 2 14 8 20 8"></polyline>
+        <line x1="16" y1="13" x2="8" y2="13"></line>
+        <line x1="16" y1="17" x2="8" y2="17"></line>
+        <polyline points="10 9 9 9 8 9"></polyline>
+      </svg>
+    </div>
+    <h2>Historique de vos analyses</h2>
+    <p class="header-subtitle">Retrouvez toutes vos analyses de CV passées</p>
   </div>
 
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="loader"></div>
+    <p>Chargement de vos analyses...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage" class="error-container">
+    <div class="error-icon">⚠️</div>
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="cvAnalyses.length === 0 && !loading && !errorMessage" class="empty-state">
+    <div class="empty-icon">📄</div>
+    <h3>Aucune analyse disponible</h3>
+    <p>Vous n'avez pas encore analysé de CV. Commencez dès maintenant !</p>
+  </div>
+
+  <!-- Analysis Cards -->
+  <div class="analyses-grid">
+    <div *ngFor="let analysis of cvAnalyses; let i = index" class="cv-analysis-card" [style.animation-delay]="i * 0.1 + 's'">
+      <!-- Card Header -->
+      <div class="card-header">
+        <div class="card-number">#{{ i + 1 }}</div>
+        <div class="card-date" *ngIf="analysis.dateAnalyse">
+          {{ analysis.dateAnalyse | date:'dd MMM yyyy' }}
+        </div>
+      </div>
+
+      <!-- Resume Section -->
+      <div class="section resume-section">
+        <div class="section-header">
+          <span class="section-icon">📝</span>
+          <h3>Résumé du profil</h3>
+        </div>
+        <p class="resume-text">{{ analysis.resume }}</p>
+      </div>
+
+      <!-- Score Section -->
+      <div class="section score-section" *ngIf="analysis.score">
+        <div class="score-circle" [ngClass]="{
+          'score-high': analysis.score >= 70,
+          'score-medium': analysis.score >= 40 && analysis.score < 70,
+          'score-low': analysis.score < 40
+        }">
+          <span class="score-value">{{ analysis.score }}</span>
+          <span class="score-label">Score</span>
+        </div>
+      </div>
+
+      <!-- Skills Section -->
+      <div class="section skills-section" *ngIf="analysis.skills && analysis.skills.length > 0">
+        <div class="section-header">
+          <span class="section-icon">💡</span>
+          <h3>Compétences</h3>
+        </div>
+        <div class="skills-container">
+          <span *ngFor="let skill of analysis.skills" class="skill-badge" [ngClass]="'level-' + (skill.level || 'junior').toLowerCase()">
+            {{ skill.name }}
+            <span class="skill-level" *ngIf="skill.level">{{ skill.level }}</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Experiences Section -->
+      <div class="section experiences-section" *ngIf="analysis.experiences && analysis.experiences.length > 0">
+        <div class="section-header">
+          <span class="section-icon">💼</span>
+          <h3>Expériences</h3>
+        </div>
+        <div class="timeline">
+          <div *ngFor="let exp of analysis.experiences" class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <h4 class="exp-role">{{ exp.role }}</h4>
+              <p class="exp-company">{{ exp.company }}</p>
+              <span class="exp-year" *ngIf="exp.year">{{ exp.year }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card Actions -->
+      <div class="card-actions">
+        <button class="btn-details">
+          <span>Voir détails</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

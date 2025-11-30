@@ -4,6 +4,7 @@ import { ApiService } from './api.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CvAnalysisComponent } from '../components/cv-analysis/cv-analysis.component';
 import { PdfExtractorService } from './pdf-extractor.service';
+import { AuthService } from './auth.service';
 import type { Offer } from '../models/offer.model';
 
 @Injectable({
@@ -13,7 +14,8 @@ export class CvAnalysisService {
   constructor(
     private apiService: ApiService,
     private pdfExtractor: PdfExtractorService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private authService: AuthService  // Ajout pour récupérer l'utilisateur connecté
   ) {}
 
   // Analyze CV with offer
@@ -24,7 +26,15 @@ export class CvAnalysisService {
         throw new Error("PDF vide ou illisible");
       }
 
-      this.apiService.analyzeCvWithOffer(cvText, selectedOffer).subscribe({
+      // Récupérer l'ID de l'utilisateur connecté
+      const currentUser = this.authService.getCurrentUser();
+      const userId = currentUser?.id;
+
+      if (!userId) {
+        console.warn('Utilisateur non connecté - analyse CV non associée à un compte');
+      }
+
+      this.apiService.analyzeCvWithOffer(cvText, selectedOffer, '', userId).subscribe({
         next: (rawResponse) => {
           const analysisResponse = typeof rawResponse === "string" ? JSON.parse(rawResponse) : rawResponse;
 

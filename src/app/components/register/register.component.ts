@@ -78,10 +78,8 @@ export class RegisterComponent {
       this.authService.register(this.registerForm.value).subscribe({
         next: (response) => {
           this.isLoading = false;
-          this.successMessage = 'Compte créé avec succès ! Redirection...';
-          setTimeout(() => {
-            this.router.navigate(['/login']);
-          }, 2000);
+          this.successMessage = 'Compte créé ! Vérifiez votre email pour activer votre compte.';
+          // Ne pas rediriger automatiquement, laisser l'utilisateur voir le message
         },
         error: (error) => {
           this.isLoading = false;

@@ -5,6 +5,9 @@ export interface User {
     prenom: string;
     email: string;
     roles: string[];
+    telephone?: string;
+    ville?: string;
+    posteRecherche?: string;
 }
 
 // src/app/models/auth.model.ts
@@ -29,4 +32,7 @@ export interface JwtResponse {
     nom: string;
     prenom: string;
     roles: string[];
+    telephone?: string;
+    ville?: string;
+    posteRecherche?: string;
 }
