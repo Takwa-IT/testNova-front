@@ -1,24 +1,45 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject, tap } from 'rxjs';
 import { ApiService } from './api.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CvAnalysisComponent } from '../components/cv-analysis/cv-analysis.component';
 import { PdfExtractorService } from './pdf-extractor.service';
 import { AuthService } from './auth.service';
 import type { Offer } from '../models/offer.model';
+import { calculateAverageScore } from '../utils/skill-utils';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CvAnalysisService {
+  // 🔹 State management: CV analysis data shared across components
+  private cvAnalysisSource = new BehaviorSubject<any>(null);
+  cvAnalysis$ = this.cvAnalysisSource.asObservable();
+
   constructor(
     private apiService: ApiService,
     private pdfExtractor: PdfExtractorService,
     private dialog: MatDialog,
-    private authService: AuthService  // Ajout pour récupérer l'utilisateur connecté
-  ) {}
+    private authService: AuthService
+  ) { }
 
-  // Analyze CV with offer
+  /**
+   * Analyze CV with standalone AI (no offer matching)
+   * Updates the shared state via BehaviorSubject
+   */
+  analyzeCv(textcv: string): Observable<any> {
+    return this.apiService.analyzeCv(textcv).pipe(
+      tap((response: any) => {
+        console.log("CV Analysis response:", response);
+        this.cvAnalysisSource.next(response); // Share with all components
+      })
+    );
+  }
+
+  /**
+   * Analyze CV with offer matching
+   * Handles PDF extraction → API call → dialog display
+   */
   async analyzeCvWithOffer(file: File, selectedOffer: Offer): Promise<void> {
     try {
       const cvText = await this.pdfExtractor.extractTextFromPdf(file);
@@ -26,7 +47,6 @@ export class CvAnalysisService {
         throw new Error("PDF vide ou illisible");
       }
 
-      // Récupérer l'ID de l'utilisateur connecté
       const currentUser = this.authService.getCurrentUser();
       const userId = currentUser?.id;
 
@@ -64,6 +84,8 @@ export class CvAnalysisService {
             missingSkills: analysis.matching?.missingSkills || []
           };
 
+          // Update shared state
+          this.cvAnalysisSource.next(adaptedAnalysis);
           this.openAnalysisDialog(adaptedAnalysis, selectedOffer);
         },
         error: (err) => {
@@ -76,7 +98,23 @@ export class CvAnalysisService {
     }
   }
 
-  // Open analysis dialog
+  /**
+   * Get current CV analysis from state
+   */
+  getCvAnalysis(): any {
+    return this.cvAnalysisSource.value;
+  }
+
+  /**
+   * Manually set CV analysis in state
+   */
+  setCvAnalysis(data: any) {
+    this.cvAnalysisSource.next(data);
+  }
+
+  /**
+   * Open analysis dialog with results
+   */
   private openAnalysisDialog(analysis: any, selectedOffer: Offer): void {
     this.dialog.open(CvAnalysisComponent, {
       width: '900px',
@@ -85,26 +123,16 @@ export class CvAnalysisService {
     });
   }
 
-  // Calculate score from skills
+  /**
+   * Calculate average score from skills
+   */
   private calculateScore(skills: any[]): number {
-    if (!skills || skills.length === 0) return 0;
-
-    const levelScores: { [key: string]: number } = {
-      'expert': 100,
-      'advanced': 75,
-      'intermediate': 50,
-      'beginner': 25
-    };
-
-    const totalScore = skills.reduce((sum, skill) => {
-      const level = skill?.level?.toLowerCase();
-      return sum + (levelScores[level] || 0);
-    }, 0);
-
-    return Math.round(totalScore / skills.length);
+    return calculateAverageScore(skills || []);
   }
 
-  // Show progress during analysis
+  /**
+   * Show progress bar animation during analysis
+   */
   showProgress(callback: (progress: number) => void): () => void {
     let progress = 0;
     const interval = setInterval(() => {

@@ -120,8 +120,8 @@
     color: white;
     margin-bottom: 0.75rem;
     background: linear-gradient(135deg, #06b6d4, #8b5cf6, #a78bfa);
-    background-clip: text;
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     letter-spacing: -0.025em;
 }

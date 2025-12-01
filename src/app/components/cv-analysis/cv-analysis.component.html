@@ -49,6 +49,17 @@
             </div>
         </div>
 
+        <!-- Recommendations (affichées par défaut si fournies par le backend) -->
+        <div class="recommendations-section" *ngIf="data?.analysis?.recommendations?.length > 0">
+            <div class="recommendations-card"
+                style="margin-top:1rem; padding:1rem; border-radius:12px; background:linear-gradient(135deg,#eff6ff 0%,#dbeafe 100%); border:1px solid #bfdbfe;">
+                <h3 style="margin:0 0 0.5rem 0; color:#0f172a;">Recommandations</h3>
+                <ul style="margin:0; padding-left:1.25rem;">
+                    <li *ngFor="let rec of data.analysis.recommendations" style="margin-bottom:0.5rem;">{{ rec }}</li>
+                </ul>
+            </div>
+        </div>
+
         <!-- Timeline and Details Section -->
         <div class="experience-section" *ngIf="getExperiences().length > 0">
             <div class="experience-container">
@@ -117,7 +128,7 @@
                 </div>
 
                 <!-- Détails -->
-                 
+
                 <div class="matching-details">
                     <!-- Compétences correspondantes -->
                     <div class="matched-skills" *ngIf="data.analysis.matchedSkills?.length > 0">

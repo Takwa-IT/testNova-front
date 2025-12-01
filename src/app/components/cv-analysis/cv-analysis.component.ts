@@ -2,7 +2,8 @@ import { Component, ViewChild, ElementRef, Inject } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { Router, RouterLink } from "@angular/router";
 import { CvAnalysis, Skill, Experience } from "../../models/cv-analysis.model";
-import { DataService } from "../../services/data.service";
+import { calculateAverageScore } from '../../utils/skill-utils';
+import { CvAnalysisService } from "../../services/cv-analysis.service";
 import { CommonModule } from "@angular/common";
 import { ApiService } from "../../services/api.service";
 
@@ -27,7 +28,7 @@ export class CvAnalysisComponent {
     public dialogRef: MatDialogRef<CvAnalysisComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { analysis: CvAnalysis | any, selectedOffer?: any },
     private router: Router,
-    private dataService: DataService
+    private cvAnalysisService: CvAnalysisService
   ) {
     console.log("CV Analysis data received:", this.data);
 
@@ -55,6 +56,11 @@ export class CvAnalysisComponent {
       resume: analysis.resume || "",
       score: analysis.score || 0
     };
+    // Propager les recommandations fournies par le backend (si présentes)
+    (this.data.analysis as any).recommendations = analysis.recommendations || (this.data.analysis as any).recommendations || [];
+    // Exposer localement pour usage simple
+    // @ts-ignore
+    this.recommendations = (this.data.analysis as any).recommendations || [];
   }
 
   toggleSkillsDropdown(): void {
@@ -66,21 +72,7 @@ export class CvAnalysisComponent {
   }
 
   private calculateScore(skills: Skill[]): number {
-    if (!skills || skills.length === 0) return 0;
-
-    const levelScores: { [key: string]: number } = {
-      expert: 100,
-      advanced: 75,
-      intermediate: 50,
-      beginner: 25,
-    };
-
-    const totalScore = skills.reduce((sum, skill) => {
-      const level = skill?.level?.toLowerCase() || "";
-      return sum + (levelScores[level] || 0);
-    }, 0);
-
-    return Math.round(totalScore / skills.length);
+    return calculateAverageScore(skills || []);
   }
 
   getLevelColor(level: string | undefined): string {
@@ -147,7 +139,7 @@ export class CvAnalysisComponent {
       return;
     }
 
-    this.dataService.setCvAnalysis(this.data.analysis);
+    this.cvAnalysisService.setCvAnalysis(this.data.analysis);
     this.dialogRef.close();
     this.router.navigate(["/test"]);
   }

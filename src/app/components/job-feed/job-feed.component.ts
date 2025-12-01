@@ -9,6 +9,7 @@ import { CvAnalysisService } from "../../services/cv-analysis.service";
 import { RouterModule } from "@angular/router";
 import type { Offer } from "../../models/offer.model";
 import { Subscription } from "rxjs";
+import { calculateAverageScore } from "../../utils/skill-utils";
 
 @Component({
   selector: "app-job-feed",
@@ -196,21 +197,7 @@ export class JobFeedComponent implements OnInit, OnDestroy {
   }
 
   private calculateScore(skills: any[]): number {
-    if (!skills || skills.length === 0) return 0;
-
-    const levelScores: { [key: string]: number } = {
-      'expert': 100,
-      'advanced': 75,
-      'intermediate': 50,
-      'beginner': 25
-    };
-
-    const totalScore = skills.reduce((sum, skill) => {
-      const level = skill?.level?.toLowerCase();
-      return sum + (levelScores[level] || 0);
-    }, 0);
-
-    return Math.round(totalScore / skills.length);
+    return calculateAverageScore(skills || []);
   }
 
   // === PROGRESSION ANALYSE CV ===

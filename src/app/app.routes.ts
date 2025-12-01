@@ -48,6 +48,11 @@ export const routes: Routes = [
         component: TestComponent
     },
     {
+        path: 'jobfeed',
+        component: JobFeedComponent
+    },
+
+    {
         path: 'profile',
         component: ProfilePageComponent
     },

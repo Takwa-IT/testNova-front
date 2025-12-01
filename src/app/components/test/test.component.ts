@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { QuestionnaireServiceService, Question, QuestionnaireResponse } from '../../services/questionnaire-service.service';
-import { DataService } from '../../services/data.service';
+import { CvAnalysisService } from '../../services/cv-analysis.service';
 import type { CvAnalysis } from '../../models/cv-analysis.model';
 import { take, timeout } from 'rxjs/operators';
 
@@ -32,12 +32,12 @@ export class TestComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private questionnaireService: QuestionnaireServiceService,
-    private dataService: DataService,
+    private cvAnalysisService: CvAnalysisService,
     private cdr: ChangeDetectorRef,
   ) { }
 
   ngOnInit(): void {
-    this.dataService.cvAnalysis$.pipe(take(1), timeout(5000)).subscribe({
+    this.cvAnalysisService.cvAnalysis$.pipe(take(1), timeout(5000)).subscribe({
       next: (cvAnalysis) => {
         console.log('TestComponent - Received cvAnalysis:', cvAnalysis);
         if (this.hasValidSkills(cvAnalysis)) {

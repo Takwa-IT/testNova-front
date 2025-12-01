@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject, catchError, Observable, of, tap } from "rxjs";
 
 @Injectable({ providedIn: 'root' })
-export class DataService {
+export class CvStateService {
   private cvAnalysisSource = new BehaviorSubject<any>(null);
   cvAnalysis$ = this.cvAnalysisSource.asObservable();
 

@@ -132,7 +132,13 @@ export class ApiService {
     return this.http.get<CvAnalysis[]>(this.getDirectUrl(`cvparuser/${userId}`));
   }
 
-  // Backend endpoint: POST /api/analyse-offre (avec /api)
+  // Backend endpoint: POST /analysecv (sans /api) - CV analysis with AI
+  analyzeCv(textcv: string): Observable<any> {
+    const body = { textcv };
+    return this.http.post<any>(this.getDirectUrl('analysecv'), body, this.httpOptions);
+  }
+
+  // Backend endpoint: POST /api/analyse-offre (avec /api) - CV analysis with offer matching
   analyzeCvWithOffer(cvText: string, offer: any, ownerName: string = '', userId?: number): Observable<CvAnalysis> {
     const body = {
       textcv: cvText,   // Clé attendue par le backend

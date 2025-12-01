@@ -131,8 +131,8 @@
     color: white;
     margin-bottom: 0.75rem;
     background: linear-gradient(135deg, #60a5fa, #a78bfa, #06b6d4);
-    background-clip: text;
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     letter-spacing: -0.025em;
 }
@@ -141,6 +141,11 @@
     color: #94a3b8;
     font-size: 1.1rem;
     line-height: 1.5;
+}
+
+.error-message {
+    text-align: center;
+    margin: 1rem 0;
 }
 
 .login-form {

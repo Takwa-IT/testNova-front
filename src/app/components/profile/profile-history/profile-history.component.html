@@ -2,7 +2,8 @@
   <!-- Header -->
   <div class="history-header">
     <div class="header-icon">
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
         <polyline points="14 2 14 8 20 8"></polyline>
         <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -35,13 +36,12 @@
 
   <!-- Analysis Cards -->
   <div class="analyses-grid">
-    <div *ngFor="let analysis of cvAnalyses; let i = index" class="cv-analysis-card" [style.animation-delay]="i * 0.1 + 's'">
+    <div *ngFor="let analysis of cvAnalyses; let i = index" class="cv-analysis-card"
+      [style.animation-delay]="i * 0.1 + 's'">
       <!-- Card Header -->
       <div class="card-header">
         <div class="card-number">#{{ i + 1 }}</div>
-        <div class="card-date" *ngIf="analysis.dateAnalyse">
-          {{ analysis.dateAnalyse | date:'dd MMM yyyy' }}
-        </div>
+
       </div>
 
       <!-- Resume Section -->
@@ -72,7 +72,8 @@
           <h3>Compétences</h3>
         </div>
         <div class="skills-container">
-          <span *ngFor="let skill of analysis.skills" class="skill-badge" [ngClass]="'level-' + (skill.level || 'junior').toLowerCase()">
+          <span *ngFor="let skill of analysis.skills" class="skill-badge"
+            [ngClass]="'level-' + (skill.level || 'junior').toLowerCase()">
             {{ skill.name }}
             <span class="skill-level" *ngIf="skill.level">{{ skill.level }}</span>
           </span>
@@ -97,15 +98,7 @@
         </div>
       </div>
 
-      <!-- Card Actions -->
-      <div class="card-actions">
-        <button class="btn-details">
-          <span>Voir détails</span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="9 18 15 12 9 6"></polyline>
-          </svg>
-        </button>
-      </div>
+
     </div>
   </div>
 </div>
