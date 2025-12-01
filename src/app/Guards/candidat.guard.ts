@@ -1,4 +1,4 @@
-// src/app/Guards/hr.guard.ts
+// src/app/Guards/candidat.guard.ts
 import { Injectable } from '@angular/core';
 import { Router, CanActivate } from '@angular/router';
 import { AuthService } from '../services/auth.service';
@@ -6,7 +6,7 @@ import { AuthService } from '../services/auth.service';
 @Injectable({
     providedIn: 'root'
 })
-export class HRGuard implements CanActivate {
+export class CandidatGuard implements CanActivate {
     constructor(
         private authService: AuthService,
         private router: Router
@@ -19,14 +19,14 @@ export class HRGuard implements CanActivate {
             return false;
         }
 
-        // Vérifier si l'utilisateur est HR
-        if (this.authService.isHR()) {
+        // Vérifier si l'utilisateur est un Candidat
+        if (this.authService.isCandidat()) {
             return true;
         }
 
-        // Si c'est un Candidat, rediriger vers le feed
-        if (this.authService.isCandidat()) {
-            this.router.navigate(['/feed']);
+        // Si c'est un HR, rediriger vers le dashboard HR
+        if (this.authService.isHR()) {
+            this.router.navigate(['/hr-dashboard']);
             return false;
         }
 

@@ -10,6 +10,8 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
 import { HRDashboardComponent } from './components/hr-dashboard/hr-dashboard.component';
 import { HRGuard } from './Guards/hr.guard';
+import { CandidatGuard } from './Guards/candidat.guard';
+import { AuthGuard } from './Guards/auth.guards';
 
 export const routes: Routes = [
     {
@@ -37,27 +39,33 @@ export const routes: Routes = [
         path: 'verify-email',
         component: VerifyEmailComponent
     },
+    // ===== PAGES CANDIDAT (protégées par CandidatGuard) =====
     {
         path: 'feed',
-        component: JobFeedComponent
+        component: JobFeedComponent,
+        canActivate: [CandidatGuard]
     },
     {
         path: 'analysecv',
-        component: CvAnalysisComponent
+        component: CvAnalysisComponent,
+        canActivate: [CandidatGuard]
     },
     {
         path: 'test',
-        component: TestComponent
+        component: TestComponent,
+        canActivate: [CandidatGuard]
     },
     {
         path: 'jobfeed',
-        component: JobFeedComponent
+        component: JobFeedComponent,
+        canActivate: [CandidatGuard]
     },
-
     {
         path: 'profile',
-        component: ProfilePageComponent
+        component: ProfilePageComponent,
+        canActivate: [AuthGuard]  // Accessible par tous les utilisateurs authentifiés
     },
+    // ===== PAGES HR (protégées par HRGuard) =====
     {
         path: 'hr-dashboard',
         component: HRDashboardComponent,

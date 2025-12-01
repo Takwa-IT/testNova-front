@@ -10,8 +10,8 @@ import { ApiService } from './api.service';
     providedIn: 'root'
 })
 export class HRService {
-    // Mode mock pour tester sans backend
-    private useMockData = true;
+    // Mode mock pour tester sans backend (mettre à false pour utiliser le vrai backend)
+    private useMockData = false;
 
     // Données mockées pour les tests
     private mockCandidates: Candidate[] = [

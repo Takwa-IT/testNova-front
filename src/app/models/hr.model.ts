@@ -7,9 +7,9 @@ export interface Candidate {
     email: string;
     telephone?: string;
     ville?: string;
-    score: number;
+    score: number | null;  // Peut être null si le candidat n'a pas encore passé de test
     poste: string;
-    dateApplication: Date;
+    dateApplication: Date | string;  // Le backend renvoie une string ISO
     status: CandidateStatus;
     cvUrl?: string;
 }

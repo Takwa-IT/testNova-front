@@ -107,8 +107,11 @@
                     <td>{{ candidate.email }}</td>
                     <td>{{ candidate.poste }}</td>
                     <td>
-                        <span class="score-badge" [ngClass]="getScoreClass(candidate.score)">
+                        <span *ngIf="candidate.score !== null" class="score-badge" [ngClass]="getScoreClass(candidate.score)">
                             {{ candidate.score }}%
+                        </span>
+                        <span *ngIf="candidate.score === null" class="score-badge score-none">
+                            N/A
                         </span>
                     </td>
                     <td>

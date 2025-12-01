@@ -266,6 +266,12 @@
     color: #991b1b;
 }
 
+.score-none {
+    background: #f3f4f6;
+    color: #6b7280;
+    font-style: italic;
+}
+
 /* Status Badge */
 .status-badge {
     display: inline-block;

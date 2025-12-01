@@ -168,7 +168,8 @@ export class HRDashboardComponent implements OnInit {
     }
 
     // Obtenir la classe CSS pour le score
-    getScoreClass(score: number): string {
+    getScoreClass(score: number | null): string {
+        if (score === null) return 'score-none';
         if (score >= 80) return 'score-excellent';
         if (score >= 60) return 'score-good';
         if (score >= 40) return 'score-average';

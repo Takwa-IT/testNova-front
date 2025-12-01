@@ -49,9 +49,18 @@ export class LoginComponent {
 
       this.authService.login(this.loginForm.value).subscribe({
         next: (response) => {
-          console.log('[LoginComponent] ✅ Login success, navigating to /feed');
+          console.log('[LoginComponent] ✅ Login success');
+          console.log('[LoginComponent] User roles:', response.roles);
           this.isLoading = false;
-          this.router.navigate(['/feed']);
+          
+          // Redirection selon le rôle
+          if (response.roles.includes('ROLE_HR')) {
+            console.log('[LoginComponent] User is HR, navigating to /hr-dashboard');
+            this.router.navigate(['/hr-dashboard']);
+          } else {
+            console.log('[LoginComponent] User is Candidat, navigating to /feed');
+            this.router.navigate(['/feed']);
+          }
         },
         error: (error) => {
           console.error('[LoginComponent] ❌ Login error:', error);
