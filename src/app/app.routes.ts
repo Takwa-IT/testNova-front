@@ -8,6 +8,8 @@ import { RegisterComponent } from './components/register/register.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
+import { HRDashboardComponent } from './components/hr-dashboard/hr-dashboard.component';
+import { HRGuard } from './Guards/hr.guard';
 
 export const routes: Routes = [
     {
@@ -55,6 +57,11 @@ export const routes: Routes = [
     {
         path: 'profile',
         component: ProfilePageComponent
+    },
+    {
+        path: 'hr-dashboard',
+        component: HRDashboardComponent,
+        canActivate: [HRGuard]
     },
     {
         path: '**',
