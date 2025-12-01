@@ -22,6 +22,9 @@ export interface RegisterRequest {
     email: string;
     motDePasse: string;
     role: string;
+    telephone?: string;
+    ville?: string;
+    posteRecherche?: string;
 }
 
 export interface JwtResponse {
@@ -35,4 +38,5 @@ export interface JwtResponse {
     telephone?: string;
     ville?: string;
     posteRecherche?: string;
+
 }

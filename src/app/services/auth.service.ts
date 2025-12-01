@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { LoginRequest, RegisterRequest, JwtResponse, User } from '../models/auth.model';
+import { TestResult } from '../models/test.model';
 import { ApiService } from './api.service';
 
 @Injectable({
@@ -38,7 +39,7 @@ export class AuthService {
         console.log('[AuthService] 🔐 LOGIN REQUEST');
         console.log('[AuthService] URL:', url);
         console.log('[AuthService] Payload:', JSON.stringify(payload, null, 2));
-        
+
         return this.http.post<JwtResponse>(url, payload).pipe(
             tap(response => {
                 console.log('[AuthService] ✅ LOGIN SUCCESS');
@@ -175,5 +176,9 @@ export class AuthService {
         return this.http.delete(this.apiService.getAuthUrl('delete-account')).pipe(
             tap(() => this.logout())
         );
+    }
+
+    getUserTestResults(userId: number): Observable<TestResult[]> {
+        return this.http.get<TestResult[]>(this.apiService.getBackendUrl(`test/user/${userId}`));
     }
 }

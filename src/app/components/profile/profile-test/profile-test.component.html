@@ -1,0 +1,50 @@
+<!-- Historique des tests -->
+<div class="profile-card" *ngIf="authService.isCandidat()">
+    <div class="card-header">
+        <h3>
+            <span class="section-icon">📊</span>
+            Mes tests
+        </h3>
+    </div>
+
+    <div *ngIf="loading" class="loading">
+        <p>Chargement des tests...</p>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-message">
+        <p>{{ errorMessage }}</p>
+    </div>
+
+    <div *ngIf="!loading && !errorMessage && testResults.length === 0" class="no-tests">
+        <p>Vous n'avez pas encore passé de test.</p>
+    </div>
+
+    <div *ngIf="!loading && !errorMessage && testResults.length > 0" class="test-results">
+        <div class="test-result-card" *ngFor="let result of testResults">
+            <div class="test-header">
+                <div class="test-score">
+                    <span class="score">{{ result.totalScore }}/10</span>
+                    <span class="percentage">{{ result.scorePercentage }}%</span>
+                </div>
+                <div class="test-date">
+                    {{ result.dateTaken | date:'dd/MM/yyyy HH:mm' }}
+                </div>
+            </div>
+
+            <div class="test-details">
+                <div class="detail-item">
+                    <span class="label">Questions correctes:</span>
+                    <span class="value">{{ result.correctAnswers }}/{{ result.totalQuestions }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Score problème:</span>
+                    <span class="value">{{ result.problemResult.score }}/{{ result.problemMaxScore }}</span>
+                </div>
+            </div>
+
+            <div class="test-feedback">
+                <p>{{ result.feedback }}</p>
+            </div>
+        </div>
+    </div>
+</div>

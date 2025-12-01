@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } 
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { User } from '../../../models/auth.model';
+import { TestResult } from '../../../models/test.model';
 
 @Component({
   selector: 'app-profile-info',
@@ -16,7 +17,8 @@ export class ProfileInfoComponent implements OnInit {
   user: User | null = null;
   profileForm!: FormGroup;
   passwordForm!: FormGroup;
-  
+
+
   isEditing = false;
   isChangingPassword = false;
   loading = false;
@@ -26,7 +28,7 @@ export class ProfileInfoComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private fb: FormBuilder
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.user = this.authService.getCurrentUser();
@@ -54,7 +56,7 @@ export class ProfileInfoComponent implements OnInit {
     this.isEditing = !this.isEditing;
     this.successMessage = '';
     this.errorMessage = '';
-    
+
     if (!this.isEditing) {
       // Reset form to original values
       this.profileForm.patchValue({
@@ -143,4 +145,6 @@ export class ProfileInfoComponent implements OnInit {
     const last = this.user.nom?.charAt(0) || '';
     return (first + last).toUpperCase();
   }
+
+
 }

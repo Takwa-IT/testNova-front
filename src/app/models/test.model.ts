@@ -1,4 +1,4 @@
-interface TestResult {
+export interface TestResult {
     totalScore: number;
     scorePercentage: number;
     correctAnswers: number;
@@ -7,9 +7,10 @@ interface TestResult {
     feedback: string;
     problemResult: ProblemResult;
     problemMaxScore: number;
+    dateTaken?: string;
 }
 
-interface QuestionResult {
+export interface QuestionResult {
     questionId: number;
     questionText: string;
     userAnswer: string;
@@ -18,7 +19,7 @@ interface QuestionResult {
     explanation: string;
 }
 
-interface ProblemResult {
+export interface ProblemResult {
     userSolution: string;
     explanation: string;
     score: number;

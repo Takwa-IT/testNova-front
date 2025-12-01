@@ -1,8 +1,9 @@
 <div class="profile-info">
   <!-- Bouton Retour -->
   <a routerLink="/jobfeed" class="btn-back">
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M19 12H5M12 19l-7-7 7-7"/>
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19 12H5M12 19l-7-7 7-7" />
     </svg>
     Retour à l'accueil
   </a>
@@ -36,7 +37,8 @@
         Informations personnelles
       </h3>
       <button class="btn-edit" (click)="toggleEdit()" *ngIf="!isEditing">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
           <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
           <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
         </svg>
@@ -106,7 +108,8 @@
         </div>
         <div class="form-group full-width" *ngIf="getRoleLabel() === 'Candidat'">
           <label for="posteRecherche">Poste recherché</label>
-          <input type="text" id="posteRecherche" formControlName="posteRecherche" placeholder="Développeur Full Stack...">
+          <input type="text" id="posteRecherche" formControlName="posteRecherche"
+            placeholder="Développeur Full Stack...">
         </div>
       </div>
 
@@ -147,7 +150,8 @@
         <div class="form-group">
           <label for="newPassword">Nouveau mot de passe *</label>
           <input type="password" id="newPassword" formControlName="newPassword" placeholder="Min 6 caractères">
-          <span class="error" *ngIf="passwordForm.get('newPassword')?.touched && passwordForm.get('newPassword')?.invalid">
+          <span class="error"
+            *ngIf="passwordForm.get('newPassword')?.touched && passwordForm.get('newPassword')?.invalid">
             Minimum 6 caractères
           </span>
         </div>
@@ -166,6 +170,8 @@
       </div>
     </form>
   </div>
+
+
 
   <!-- Actions du compte -->
   <div class="profile-card danger-zone">

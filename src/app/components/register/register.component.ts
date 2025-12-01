@@ -95,7 +95,7 @@ export class RegisterComponent {
     this.router.navigate(['/login']);
   }
 
-   navigateToFeed() {
+  navigateToFeed() {
     this.router.navigate(['/feed']);
   }
 }

@@ -43,7 +43,7 @@ export class ApiService {
   }
 
   // Method for backend endpoints WITH /api prefix
-  private getBackendUrl(endpoint: string): string {
+  getBackendUrl(endpoint: string): string {
     return `${this.backendBase}/${endpoint}`;
   }
 
