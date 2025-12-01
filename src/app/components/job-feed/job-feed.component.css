@@ -3,15 +3,16 @@
 /* ================================================= */
 
 :root {
-    --sidebar-width: 96px;
+    --sidebar-width: 80px;
     --main-feed: 800px;
     --right-col: 380px;
     --blue-900: #0f172a;
     --blue-800: #1e293b;
     --blue-700: #334155;
-    --blue-500: #3b82f6;
+    --blue-500: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     --blue-400: #60a5fa;
     --cyan: #06b6d4;
+
     --purple: #8b5cf6;
     --white: #ffffff;
     --glass: rgba(255, 255, 255, 0.1);
@@ -34,10 +35,11 @@
 .sidebar-nav {
     position: fixed;
     left: 0;
+   
     top: 0;
     width: var(--sidebar-width);
     height: 100vh;
-    background: linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #020617 100%);
+    background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     padding: 2rem 1.5rem;
     display: flex;
     flex-direction: column;
@@ -51,10 +53,10 @@
 }
 
 .brand-logo h3 {
-    color: white;
-    font-size: 1.5rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, #60a5fa, #a78bfa);
+    color: rgb(22, 29, 48);
+    font-size: 2rem;
+    font-weight: 1000;
+    background: rgb(22, 29, 48);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -64,7 +66,6 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    flex: 1;
 }
 
 .nav-item {
@@ -99,6 +100,7 @@
     transition: var(--transition);
     text-decoration: none;
     color: inherit;
+    margin-top: 15rem;
 }
 
 .user-profile:hover {
@@ -131,16 +133,17 @@
 .main-content {
     margin-left: var(--sidebar-width);
     flex: 1;
-    background: #0f172a;
+    background:#dddde0;
 }
 
 /* Header */
 .top-search-bar {
-    background: rgba(15, 23, 42, 0.95);
+    background:  linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding: 1rem 2rem;
     position: sticky;
+    
     top: 0;
     z-index: 100;
 }
@@ -217,6 +220,10 @@
     gap: 1rem;
     box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.4);
 }
+#hh{
+    background-color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+;
+}
 
 .search-input {
     flex: 1;
@@ -239,11 +246,12 @@
 
 /* New Post Card */
 .new-post-card {
-    background: var(--glass);
+    background:  #e8e4eb;
     backdrop-filter: blur(32px);
     border: 1px solid rgba(59, 130, 246, 0.25);
     border-radius: var(--radius);
     padding: 2rem;
+    border-radius: 1.5ch;
     box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.4);
 }
 
@@ -269,11 +277,11 @@
 
 .post-input {
     flex: 1;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(178, 175, 175, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 20px;
     padding: 1rem 1.5rem;
-    color: white;
+    color: rgb(99, 96, 96);
     font-size: 1rem;
     transition: var(--transition);
     outline: none;
@@ -285,7 +293,7 @@
 }
 
 .post-input::placeholder {
-    color: #94a3b8;
+    color: #56585b;
 }
 
 .post-actions {
@@ -295,22 +303,22 @@
 }
 
 .btn-post-action {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(30, 41, 59, 0.8);
+    border: 2px solid rgba(100, 116, 139, 0.6);
     border-radius: 16px;
     padding: 0.75rem 1.5rem;
-    color: white;
+    color: #e2e8f0;
     display: flex;
     align-items: center;
     gap: 0.5rem;
     cursor: pointer;
     transition: var(--transition);
-    font-weight: 500;
-    border: none;
+    font-weight: 600;
 }
 
 .btn-post-action:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(51, 65, 85, 0.9);
+    border-color: rgba(148, 163, 184, 0.8);
     transform: translateY(-2px);
 }
 
@@ -342,7 +350,7 @@
 }
 
 .text-primary {
-    color: #3b82f6 !important;
+    color: #07162f !important;
 }
 
 .visually-hidden {
@@ -367,11 +375,12 @@
 
 /* Post Card */
 .post-card {
-    background: var(--glass);
+    background:   #e8e4eb ;
     backdrop-filter: blur(32px);
     border: 1px solid rgba(59, 130, 246, 0.25);
     border-radius: var(--radius);
     padding: 2rem;
+    border-radius: 1.5ch;
     box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.4);
     transition: var(--transition);
 }
@@ -404,21 +413,19 @@
 }
 
 .company-name {
-    color: white;
-    font-weight: 600;
+    color: #7fbae5;
+    font-weight: 700;
     margin-bottom: 0.25rem;
+    font-size: 1rem;
 }
 
-.mb-0 {
-    margin-bottom: 0 !important;
-}
 
 .btn-icon-sm {
     background: rgba(255, 255, 255, 0.1);
     border: none;
     border-radius: 8px;
     padding: 0.5rem;
-    color: white;
+    color: rgb(90, 86, 86);
     cursor: pointer;
     transition: var(--transition);
 }
@@ -433,20 +440,19 @@
 }
 
 .post-title {
-    color: white;
+    color: #767474;
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 1rem;
-    background: linear-gradient(135deg, #60a5fa, #a78bfa);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .post-description {
-    color: #cbd5e1;
-    line-height: 1.6;
+    color: #969a9f;
+    line-height: 1.7;
     margin-bottom: 1.5rem;
+    font-size: 1rem;
+    font-weight: 400;
 }
 
 .post-image-container {
@@ -467,7 +473,7 @@
 }
 
 .opportunity-badge {
-    background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    background:  linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     padding: 0.75rem 1.5rem;
     border-radius: 50px;
@@ -480,6 +486,10 @@
 
 .me-1 {
     margin-right: 0.25rem;
+}
+
+.me-2 {
+    margin-right: 0.5rem;
 }
 
 /* Post Footer */
@@ -555,7 +565,7 @@
 
 /* Apply Button */
 .btn-apply {
-    background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     padding: 1rem 2.4rem;
     border-radius: 50px;
@@ -574,10 +584,6 @@
 .btn-apply:hover {
     transform: translateY(-6px) scale(1.05);
     box-shadow: 0 20px 50px rgba(59, 130, 246, 0.6);
-}
-
-.me-2 {
-    margin-right: 0.5rem;
 }
 
 /* Comments Section */
@@ -631,7 +637,9 @@
 }
 
 .comments-list {
-    space-y: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 .comment-item {
@@ -711,10 +719,6 @@
     margin: 0;
 }
 
-.me-2 {
-    margin-right: 0.5rem;
-}
-
 .zone-content {
     display: flex;
     gap: 2rem;
@@ -755,11 +759,7 @@
     margin-left: 1rem;
 }
 
-.company-name {
-    font-weight: 700;
-    color: white;
-    margin: 0;
-}
+
 
 .company-sector {
     font-size: 0.9rem;

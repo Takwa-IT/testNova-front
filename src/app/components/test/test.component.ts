@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { QuestionnaireServiceService, Question, QuestionnaireResponse } from '../../services/questionnaire-service.service';
 import { CvAnalysisService } from '../../services/cv-analysis.service';
 import type { CvAnalysis } from '../../models/cv-analysis.model';
@@ -9,7 +10,7 @@ import { take, timeout } from 'rxjs/operators';
 @Component({
   selector: 'app-test',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './test.component.html',
   styleUrls: ['./test.component.css'],
 })

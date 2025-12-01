@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { ApiService } from "../../../services/api.service";
 import { AuthService } from "../../../services/auth.service";
 import { CvAnalysis } from '../../../models/cv-analysis.model';
@@ -9,7 +10,7 @@ import { catchError, finalize } from 'rxjs/operators';
 @Component({
   selector: 'app-profile-history',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './profile-history.component.html',
   styleUrls: ['./profile-history.component.css']
 })
