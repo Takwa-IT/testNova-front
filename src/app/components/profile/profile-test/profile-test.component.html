@@ -1,49 +1,100 @@
-<!-- Historique des tests -->
-<div class="profile-card" *ngIf="authService.isCandidat()">
-    <div class="card-header">
-        <h3>
-            <span class="section-icon">📊</span>
-            Mes tests
-        </h3>
+<div class="profile-history">
+    <!-- Bouton Retour – 100 % fonctionnel -->
+    <a routerLink="/jobfeed" class="btn-back" title="Retour à l'accueil">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+        Retour à l'accueil
+    </a>
+
+    <!-- Header -->
+    <div class="history-header">
+        <div class="header-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 3h18v18H3z"></path>
+                <path d="M8 12h8"></path>
+                <path d="M12 8v8"></path>
+                <circle cx="12" cy="12" r="10"></circle>
+            </svg>
+        </div>
+        <h2>Mes Tests Techniques</h2>
+        <p class="header-subtitle">Retrouvez tous vos résultats de tests passés</p>
     </div>
 
-    <div *ngIf="loading" class="loading">
-        <p>Chargement des tests...</p>
+    <!-- Loading -->
+    <div *ngIf="loading" class="loading-container">
+        <div class="loader"></div>
+        <p>Chargement de vos tests...</p>
     </div>
 
-    <div *ngIf="errorMessage" class="error-message">
+    <!-- Error -->
+    <div *ngIf="errorMessage" class="error-container">
+        <div class="error-icon">Warning</div>
         <p>{{ errorMessage }}</p>
     </div>
 
-    <div *ngIf="!loading && !errorMessage && testResults.length === 0" class="no-tests">
-        <p>Vous n'avez pas encore passé de test.</p>
+    <!-- Empty State -->
+    <div *ngIf="!loading && !errorMessage && testResults.length === 0" class="empty-state">
+        <div class="empty-icon">No tests</div>
+        <h3>Aucun test passé</h3>
+        <p>Vous n'avez pas encore passé de test technique.<br>
+            Commencez dès maintenant pour évaluer vos compétences !</p>
     </div>
 
-    <div *ngIf="!loading && !errorMessage && testResults.length > 0" class="test-results">
-        <div class="test-result-card" *ngFor="let result of testResults">
-            <div class="test-header">
-                <div class="test-score">
-                    <span class="score">{{ result.totalScore }}/10</span>
-                    <span class="percentage">{{ result.scorePercentage }}%</span>
-                </div>
-                <div class="test-date">
-                    {{ result.dateTaken | date:'dd/MM/yyyy HH:mm' }}
+    <!-- Tests Grid -->
+    <div class="analyses-grid" *ngIf="!loading && !errorMessage && testResults.length > 0">
+        <div *ngFor="let result of testResults; let i = index" class="cv-analysis-card test-card"
+            [style.animation-delay.ms]="i * 100">
+
+            <!-- Card Header -->
+            <div class="card-header">
+                
+            </div>
+
+            <!-- Score Circle -->
+            <div class="score-section">
+                <div class="score-circle" [ngClass]="{
+               'score-high': result.totalScore >= 8.5,
+               'score-medium': result.totalScore >= 6.5 && result.totalScore < 8.5,
+               'score-low': result.totalScore < 6.5
+             }">
+                    <span class="score-value">{{ result.totalScore | number:'1.1-1' }}</span>
+                    <span class="score-label">/10</span>
                 </div>
             </div>
 
-            <div class="test-details">
-                <div class="detail-item">
-                    <span class="label">Questions correctes:</span>
-                    <span class="value">{{ result.correctAnswers }}/{{ result.totalQuestions }}</span>
+            <!-- Details -->
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-icon"></span>
+                    <h3>Résultats détaillés</h3>
                 </div>
-                <div class="detail-item">
-                    <span class="label">Score problème:</span>
-                    <span class="value">{{ result.problemResult.score }}/{{ result.problemMaxScore }}</span>
+                <div class="test-details-grid">
+                    <div class="detail-item">
+                        <span class="label">Questions correctes</span>
+                        <span class="value highlight">{{ result.correctAnswers }} / {{ result.totalQuestions }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Score problème pratique</span>
+                        <span class="value highlight">{{ result.problemResult.score }} / {{ result.problemMaxScore
+                            }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Pourcentage global</span>
+                        <span class="value highlight">{{ result.scorePercentage }}%</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="test-feedback">
-                <p>{{ result.feedback }}</p>
+            <!-- Feedback -->
+            <div class="section" *ngIf="result.feedback">
+                <div class="section-header">
+                    <span class="section-icon"></span>
+                    <h3>Retour de l'IA</h3>
+                </div>
+                <p class="resume-text feedback-text">{{ result.feedback }}</p>
             </div>
         </div>
     </div>

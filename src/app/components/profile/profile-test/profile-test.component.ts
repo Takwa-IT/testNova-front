@@ -22,8 +22,7 @@ export class ProfileTestComponent implements OnInit {
     }
 
     loadTestResults(): void {
-        const currentUser = this.authService.getCurrentUser();
-        if (!currentUser || !currentUser.id) {
+        if (!this.authService.isAuthenticated()) {
             this.errorMessage = 'Utilisateur non connecté';
             return;
         }
@@ -31,14 +30,14 @@ export class ProfileTestComponent implements OnInit {
         this.loading = true;
         this.errorMessage = '';
 
-        this.authService.getUserTestResults(currentUser.id).subscribe({
+        this.authService.getUserTestResults().subscribe({   // ← sans paramètre
             next: (results: TestResult[]) => {
                 this.testResults = results;
                 this.loading = false;
             },
             error: (error) => {
-                console.error('Erreur lors du chargement des tests:', error);
-                this.errorMessage = 'Erreur lors du chargement des tests';
+                console.error('Erreur chargement tests:', error);
+                this.errorMessage = 'Impossible de charger vos tests';
                 this.loading = false;
             }
         });

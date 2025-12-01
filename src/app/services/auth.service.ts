@@ -178,7 +178,8 @@ export class AuthService {
         );
     }
 
-    getUserTestResults(userId: number): Observable<TestResult[]> {
-        return this.http.get<TestResult[]>(this.apiService.getBackendUrl(`test/user/${userId}`));
+    getUserTestResults(): Observable<TestResult[]> {
+        // Plus besoin de passer userId → le backend le récupère via JWT
+        return this.http.get<TestResult[]>(this.apiService.getBackendUrl('test/history'));
     }
 }

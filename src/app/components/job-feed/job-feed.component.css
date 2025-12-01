@@ -91,6 +91,27 @@
     width: 24px;
 }
 
+/* Bouton Déconnexion */
+.logout-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    font-size: inherit;
+    font-family: inherit;
+    margin-top: auto;
+}
+
+.logout-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+}
+
+.logout-btn i {
+    color: #ef4444;
+}
+
 .user-profile {
     display: flex;
     align-items: center;

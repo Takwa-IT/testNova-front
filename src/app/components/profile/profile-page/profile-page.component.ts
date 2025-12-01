@@ -11,7 +11,7 @@ import { ProfileTestComponent } from '../profile-test/profile-test.component';
     MatToolbarModule,
     ProfileInfoComponent,
     ProfileHistoryComponent,
-    ProfileTestComponent],
+  ProfileTestComponent],
   templateUrl: './profile-page.component.html',
   standalone: true,
   styleUrl: './profile-page.component.css'

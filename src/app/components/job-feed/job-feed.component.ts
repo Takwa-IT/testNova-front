@@ -6,7 +6,8 @@ import { ApiService } from "../../services/api.service";
 import { OffersService } from "../../services/offers.service";
 import { FollowedCompaniesService } from "../../services/followed-companies.service";
 import { CvAnalysisService } from "../../services/cv-analysis.service";
-import { RouterModule } from "@angular/router";
+import { AuthService } from "../../services/auth.service";
+import { Router, RouterModule } from "@angular/router";
 import type { Offer } from "../../models/offer.model";
 import { Subscription } from "rxjs";
 import { calculateAverageScore } from "../../utils/skill-utils";
@@ -38,7 +39,9 @@ export class JobFeedComponent implements OnInit, OnDestroy {
     private apiService: ApiService,
     private offersService: OffersService,
     private followedCompaniesService: FollowedCompaniesService,
-    private cvAnalysisService: CvAnalysisService
+    private cvAnalysisService: CvAnalysisService,
+    private authService: AuthService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -57,6 +60,12 @@ export class JobFeedComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  // -------- LOGOUT --------
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 
   // -------- OFFERS --------
